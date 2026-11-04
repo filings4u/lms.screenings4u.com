@@ -157,6 +157,42 @@
     };
   }
 
+  // Extensions belong to a specific existing enrollment, not a new catalog course.
+  function renderExtensionOption(){
+    const eligible = state.enrollments.filter(row =>
+      row?.id && row?.course_id && (row.status === "active" || row.status === "completed")
+      && state.courses.some(course => course.id === row.course_id)
+    );
+    const options = eligible.map(row => {
+      const course = state.courses.find(item => item.id === row.course_id);
+      return `<option value="${esc(row.id)}" data-course="${esc(row.course_id)}">${esc(course.title)}</option>`;
+    }).join("");
+    return `<div class="section"><div class="panel">
+      <div class="panel-head"><div><h2>Extend Course Access</h2><p>Need more time? Add 30 days to a course you already purchased while keeping your progress.</p></div><span class="badge">30-day extension</span></div>
+      <div class="course-library-extension" style="display:flex;flex-wrap:wrap;gap:14px;align-items:end;padding:4px 0 8px">
+        <div class="field" style="flex:1 1 260px;max-width:460px">
+          <label for="extensionEnrollment">Course to extend</label>
+          <select id="extensionEnrollment" ${eligible.length ? "" : "disabled"}>${eligible.length ? options : '<option value="">No enrolled courses available</option>'}</select>
+        </div>
+        <button class="btn primary" id="extendCourseButton" type="button" ${eligible.length ? "" : "disabled"}>Extend for 30 days</button>
+      </div>
+      <p style="margin:4px 0 0;font-size:.875rem;color:#64748b">One-time purchase. Your selected enrollment will be confirmed at secure checkout before payment.</p>
+      ${eligible.length ? "" : '<p style="margin:8px 0 0"><a href="https://training.screenings4u.com/course-extension.html">Learn about course extensions</a> — enroll in a course first to purchase an extension.</p>'}
+    </div></div>`;
+  }
+
+  function bindExtensionOption(){
+    document.getElementById("extendCourseButton")?.addEventListener("click", () => {
+      const selection = document.getElementById("extensionEnrollment");
+      const option = selection?.selectedOptions?.[0];
+      const enrollmentId = selection?.value;
+      const courseId = option?.dataset?.course;
+      if (!enrollmentId || !courseId || !state.enrollments.some(row => row.id === enrollmentId && row.course_id === courseId)) return;
+      const params = new URLSearchParams({product:"training_course_extension_30_days",course:courseId,enrollment:enrollmentId});
+      window.location.assign("lms-checkout.html?" + params.toString());
+    });
+  }
+
   function renderLibrary(){
     const q = state.query.trim().toLowerCase();
     const filtered = state.courses.filter(course => {
@@ -199,6 +235,7 @@
         <article class="metric"><small>Completed</small><strong>${completedCount}</strong><span>Finished training</span></article>
         <article class="metric"><small>Available</small><strong>${Math.max(0, state.courses.length - enrolledCount)}</strong><span>Not currently assigned</span></article>
       </div>
+      ${renderExtensionOption()}
       <div class="section">
         <div class="panel">
           <div class="panel-head"><div><h2>Course Library</h2><p>Published screenings4u Learning Center courses.</p></div><span class="course-library-count">${filtered.length} course${filtered.length === 1 ? "" : "s"}</span></div>
@@ -210,6 +247,7 @@
         </div>
       </div>`;
 
+    bindExtensionOption();
     const search = document.getElementById("courseSearch");
     const filter = document.getElementById("courseFilter");
     search?.addEventListener("input", event => { state.query = event.target.value; renderLibrary(); document.getElementById("courseSearch")?.focus(); });
