@@ -1383,3 +1383,75 @@ body[data-portal-page="staff-form"] .form-actions,body[data-portal-page="staff-v
 
 /* TRAINING COURSE LIBRARY */
 .course-library-toolbar{display:grid;grid-template-columns:minmax(260px,1fr) 220px;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);background:#fbfcfe}.course-library-toolbar .field{margin:0}.course-library-toolbar input,.course-library-toolbar select{min-height:40px;background:#fff}.course-library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;padding:14px 16px}.course-library-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px;display:flex;flex-direction:column;min-height:220px}.course-library-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.course-library-card h3{margin:10px 0 0;color:var(--navy);font-size:.8125rem;line-height:1.35}.course-library-card p{margin:7px 0 0;color:var(--muted);font-size:.65625rem;line-height:1.55}.course-library-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.course-library-progress{margin-top:14px}.course-library-progress-head{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:.5625rem;font-weight:800}.course-library-progress-track{height:6px;margin-top:6px;background:#edf2f7;border-radius:999px;overflow:hidden}.course-library-progress-track>span{display:block;height:100%;background:var(--orange)}.course-library-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:auto;padding-top:15px}.course-library-actions .btn{min-width:96px}.course-library-count{color:var(--muted);font-size:.625rem;font-weight:800}.course-library-panel-empty{padding:34px 18px;text-align:center;color:var(--muted);font-size:.6875rem}@media(max-width:1050px){.course-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:720px){.course-library-toolbar{grid-template-columns:1fr}.course-library-grid{grid-template-columns:1fr;padding:12px}}
+
+
+/* LMS Course Library — 30-day extension: aligned controls and contained panel spacing. */
+body[data-portal-page="course-library"] .course-extension-panel{overflow:hidden}
+body[data-portal-page="course-library"] .course-extension-panel .panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+body[data-portal-page="course-library"] .course-extension-body{
+  padding:18px 20px 20px;
+}
+body[data-portal-page="course-library"] .course-library-extension{
+  display:grid;
+  grid-template-columns:minmax(0, min(520px, 100%)) max-content;
+  align-items:end;
+  justify-content:start;
+  gap:14px;
+}
+body[data-portal-page="course-library"] .course-extension-field{
+  min-width:0;
+  width:100%;
+  max-width:none;
+  margin:0;
+}
+body[data-portal-page="course-library"] .course-extension-field label{
+  display:block;
+  margin:0 0 8px;
+}
+body[data-portal-page="course-library"] .course-extension-field select{
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:42px;
+  margin:0;
+  background:#fff;
+}
+body[data-portal-page="course-library"] .course-extension-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  min-height:42px;
+  margin:0;
+  padding:10px 17px;
+  white-space:nowrap;
+}
+body[data-portal-page="course-library"] .course-extension-note,
+body[data-portal-page="course-library"] .course-extension-empty{
+  margin:13px 0 0;
+  color:var(--muted);
+  font-size:.6875rem;
+  line-height:1.55;
+}
+body[data-portal-page="course-library"] .course-extension-button:disabled{
+  cursor:not-allowed;
+  opacity:.55;
+}
+@media(max-width:760px){
+  body[data-portal-page="course-library"] .course-extension-body{padding:15px 16px 18px}
+  body[data-portal-page="course-library"] .course-library-extension{
+    grid-template-columns:minmax(0,1fr);
+    gap:12px;
+  }
+  body[data-portal-page="course-library"] .course-extension-button{
+    width:100%;
+    min-height:44px;
+    white-space:normal;
+  }
+}
+@media(max-width:480px){
+  body[data-portal-page="course-library"] .course-extension-body{padding:14px 12px 16px}
+  body[data-portal-page="course-library"] .course-extension-panel .panel-head{align-items:flex-start}
+}
