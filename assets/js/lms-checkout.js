@@ -68,8 +68,8 @@ function preloadDetails(){
  if(window.trainingServiceId==='specimen_collector_training_supplies'){
   const d=SUPPLIES_DETAILS;$('courseName').textContent=d.title;$('courseSummary').textContent=d.summary;$('coursePrice').textContent=money(d.price,'usd');$('accessLine').textContent='Physical kit + digital downloads';$('requirementsBlock').style.display='none';list.innerHTML=d.items.map(x=>'<li>'+x+'</li>').join('');return;
  }
- if(productSlug==='training_course_extension_30_days'){
-  $('courseName').textContent='30-Day Course Access Extension';$('courseSummary').textContent='Adds 30 days automatically to the exact course enrollment you opened this checkout from.';$('coursePrice').textContent=money(100,'usd');$('accessLine').textContent='30 additional days';$('requirementsBlock').style.display='none';list.innerHTML='<li>30 additional days added automatically after successful payment</li><li>Applied only to your existing enrollment</li><li>No course selection or manual processing required</li><li>Updated expiration date appears in My Courses</li>';return;
+ if(productSlug==='training-course-extension-30-days'){
+  $('courseName').textContent='30-Day Course Access Extension';$('courseSummary').textContent='Adds 30 days automatically to the exact course enrollment you opened this checkout from.';$('coursePrice').textContent=money(115,'usd');$('accessLine').textContent='30 additional days';$('requirementsBlock').style.display='none';list.innerHTML='<li>30 additional days added automatically after successful payment</li><li>Applied only to your existing enrollment</li><li>No course selection or manual processing required</li><li>Updated expiration date appears in My Courses</li>';return;
  }
  if(GROUP_DETAILS[productSlug]){const g=GROUP_DETAILS[productSlug];$('courseName').textContent=g.title;$('courseSummary').textContent=g.summary;$('coursePrice').textContent=money(g.price,'usd');$('accessLine').textContent=g.seats+' learner seat'+(g.seats===1?'':'s')+' · '+g.accessDays+'-day access per learner';$('requirementsBlock').style.display='none';list.innerHTML=g.items.map(x=>'<li>'+x+'</li>').join('');const n=$('groupNote');if(n){n.style.display='block';n.textContent=g.seats===1?'This hidden service is for live checkout testing only.':'After payment, the purchased seats are recorded with the group-training order for assignment to your team.';}return;}
  const d=COURSE_DETAILS[courseId];
@@ -117,7 +117,7 @@ function firstMissingRequired(){
 }
 async function continueToPayment(){
  const auth=await session();
- if(productSlug==='training_course_extension_30_days'&&!auth.session){location.href='training-login.html?return='+encodeURIComponent(location.pathname+location.search);return;}
+ if(productSlug==='training-course-extension-30-days'&&!auth.session){location.href='training-login.html?return='+encodeURIComponent(location.pathname+location.search);return;}
  await prefillCustomer(auth);
  const missing=firstMissingRequired();
  if(missing){status('Enter your '+missing.label+' to continue.');missing.el?.focus();return;}
@@ -127,10 +127,10 @@ async function continueToPayment(){
 async function start(){
  const params=new URLSearchParams(location.search);courseId=params.get('course')||'';productSlug=params.get('product')||params.get('service')||'';enrollmentId=params.get('enrollment')||params.get('enrollment_id')||'';window.trainingServiceId=productSlug;if($('applyDiscount'))$('applyDiscount').onclick=validateDiscountCode;
  if(!courseId&&!productSlug){status('No training course or product was selected.');return;}
- if(productSlug==='training_course_extension_30_days'&&!enrollmentId){status('Open My Courses and use Extend on the course you want to extend.');$('payButton').disabled=true;return;}
+ if(productSlug==='training-course-extension-30-days'&&!enrollmentId){status('Open My Courses and use Extend on the course you want to extend.');$('payButton').disabled=true;return;}
  preloadDetails();
  const auth=await session();
- if(productSlug==='training_course_extension_30_days'&&!auth.session){location.href='training-login.html?return='+encodeURIComponent(location.pathname+location.search);return;}
+ if(productSlug==='training-course-extension-30-days'&&!auth.session){location.href='training-login.html?return='+encodeURIComponent(location.pathname+location.search);return;}
  await prefillCustomer(auth);
  $('payButton').disabled=false;
  $('payButton').textContent='Continue to Payment';
@@ -154,7 +154,7 @@ async function initialize(auth){
   paymentElement=elements.create('payment');
   paymentElement.mount('#payment-element');
   const paymentSection=$('stripePaymentSection');if(paymentSection){paymentSection.classList.remove('hidden');paymentSection.setAttribute('aria-hidden','false');}
-  const actionLabel=productSlug==='training_course_extension_30_days'?'Extend Course':(data.product?.metadata?.category==='training_access'?'Complete Purchase':(data.product?.kind==='supplies'?'Complete Order':(data.product?.kind==='group'?'Purchase Seats':'Enroll')));$('payButton').disabled=false;$('payButton').textContent='Pay '+money(data.total,data.currency)+' & '+actionLabel;$('payButton').onclick=pay;$('status').className='checkout-error';$('status').textContent='';
+  const actionLabel=productSlug==='training-course-extension-30-days'?'Extend Course':(data.product?.metadata?.category==='training_access'?'Complete Purchase':(data.product?.kind==='supplies'?'Complete Order':(data.product?.kind==='group'?'Purchase Seats':'Enroll')));$('payButton').disabled=false;$('payButton').textContent='Pay '+money(data.total,data.currency)+' & '+actionLabel;$('payButton').onclick=pay;$('status').className='checkout-error';$('status').textContent='';
  }catch(e){console.error(e);const paymentSection=$('stripePaymentSection');if(paymentSection){paymentSection.classList.add('hidden');paymentSection.setAttribute('aria-hidden','true');}status(e.message||'Unable to load checkout.');$('payButton').disabled=false;$('payButton').textContent='Continue to Payment';}
 }
 async function pay(){
