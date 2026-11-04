@@ -247,7 +247,11 @@
           </div>
           ${cards ? `<div class="course-library-grid">${cards}</div>` : `<div class="course-library-panel-empty">No courses match the current search or filter.</div>`}
         </div>
-      </div>`;
+      </div>
+      <div class="section"><div class="panel course-group-panel">
+        <div class="panel-head"><div><h2>Group Training</h2><p>Purchase multiple learner seats for DOT collector, DER, supervisor, employee, and HazMat courses.</p></div><span class="badge">For employers</span></div>
+        <div class="course-group-body"><p>Group Training is a purchasing and enrollment option for existing courses, not an additional course in the library.</p><a class="btn primary" href="https://training.screenings4u.com/group-training.html">Explore Group Training →</a></div>
+      </div></div>`;
 
     bindExtensionOption();
     const search = document.getElementById("courseSearch");
