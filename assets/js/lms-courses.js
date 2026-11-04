@@ -167,17 +167,19 @@
       const course = state.courses.find(item => item.id === row.course_id);
       return `<option value="${esc(row.id)}" data-course="${esc(row.course_id)}">${esc(course.title)}</option>`;
     }).join("");
-    return `<div class="section"><div class="panel">
+    return `<div class="section course-extension-section"><div class="panel course-extension-panel">
       <div class="panel-head"><div><h2>Extend Course Access</h2><p>Need more time? Add 30 days to a course you already purchased while keeping your progress.</p></div><span class="badge">30-day extension</span></div>
-      <div class="course-library-extension" style="display:flex;flex-wrap:wrap;gap:14px;align-items:end;padding:4px 0 8px">
-        <div class="field" style="flex:1 1 260px;max-width:460px">
-          <label for="extensionEnrollment">Course to extend</label>
-          <select id="extensionEnrollment" ${eligible.length ? "" : "disabled"}>${eligible.length ? options : '<option value="">No enrolled courses available</option>'}</select>
+      <div class="course-extension-body">
+        <div class="course-library-extension">
+          <div class="field course-extension-field">
+            <label for="extensionEnrollment">Course to extend</label>
+            <select id="extensionEnrollment" ${eligible.length ? "" : "disabled"}>${eligible.length ? options : '<option value="">No enrolled courses available</option>'}</select>
+          </div>
+          <button class="btn primary course-extension-button" id="extendCourseButton" type="button" ${eligible.length ? "" : "disabled"}>Extend for 30 days · $115</button>
         </div>
-        <button class="btn primary" id="extendCourseButton" type="button" ${eligible.length ? "" : "disabled"}>Extend for 30 days · $115</button>
+        <p class="course-extension-note">One-time $115 purchase. Your selected enrollment will be confirmed at secure checkout before payment.</p>
+        ${eligible.length ? "" : '<p class="course-extension-empty"><a href="https://training.screenings4u.com/course-extension.html">Learn about course extensions</a> — enroll in a course first to purchase an extension.</p>'}
       </div>
-      <p style="margin:4px 0 0;font-size:.875rem;color:#64748b">One-time $115 purchase. Your selected enrollment will be confirmed at secure checkout before payment.</p>
-      ${eligible.length ? "" : '<p style="margin:8px 0 0"><a href="https://training.screenings4u.com/course-extension.html">Learn about course extensions</a> — enroll in a course first to purchase an extension.</p>'}
     </div></div>`;
   }
 
