@@ -174,9 +174,9 @@
           <label for="extensionEnrollment">Course to extend</label>
           <select id="extensionEnrollment" ${eligible.length ? "" : "disabled"}>${eligible.length ? options : '<option value="">No enrolled courses available</option>'}</select>
         </div>
-        <button class="btn primary" id="extendCourseButton" type="button" ${eligible.length ? "" : "disabled"}>Extend for 30 days</button>
+        <button class="btn primary" id="extendCourseButton" type="button" ${eligible.length ? "" : "disabled"}>Extend for 30 days · $115</button>
       </div>
-      <p style="margin:4px 0 0;font-size:.875rem;color:#64748b">One-time purchase. Your selected enrollment will be confirmed at secure checkout before payment.</p>
+      <p style="margin:4px 0 0;font-size:.875rem;color:#64748b">One-time $115 purchase. Your selected enrollment will be confirmed at secure checkout before payment.</p>
       ${eligible.length ? "" : '<p style="margin:8px 0 0"><a href="https://training.screenings4u.com/course-extension.html">Learn about course extensions</a> — enroll in a course first to purchase an extension.</p>'}
     </div></div>`;
   }
@@ -188,7 +188,7 @@
       const enrollmentId = selection?.value;
       const courseId = option?.dataset?.course;
       if (!enrollmentId || !courseId || !state.enrollments.some(row => row.id === enrollmentId && row.course_id === courseId)) return;
-      const params = new URLSearchParams({product:"training_course_extension_30_days",course:courseId,enrollment:enrollmentId});
+      const params = new URLSearchParams({product:"training-course-extension-30-days",course:courseId,enrollment:enrollmentId});
       window.location.assign("lms-checkout.html?" + params.toString());
     });
   }
