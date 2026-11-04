@@ -136,6 +136,7 @@
     const enrollment = enrollmentFor(course.id);
     if (!enrollment) return "Available";
     const progress = pct(enrollment.progress_percent);
+    if (enrollment.status === "expired" || (enrollment.expires_at && new Date(enrollment.expires_at).getTime() <= Date.now())) return "Access Expired";
     if (enrollment.status === "completed" || progress >= 100) return "Completed";
     if (progress > 0) return "In Progress";
     return "Assigned";
@@ -143,7 +144,7 @@
 
   function badgeClass(label){
     if (label === "Completed") return "good";
-    if (label === "In Progress" || label === "Assigned") return "warn";
+    if (label === "In Progress" || label === "Assigned" || label === "Access Expired") return "warn";
     return "";
   }
 
@@ -151,6 +152,7 @@
     const enrollment = enrollmentFor(course.id);
     if (!enrollment) return { label: "View Course", href: `lms-course-details.html?course=${encodeURIComponent(course.id)}` };
     const progress = pct(enrollment.progress_percent);
+    if (courseStatus(course) === "Access Expired") return { label: "Extend Access · $115", href: `lms-checkout.html?${new URLSearchParams({product:"training-course-extension-30-days",course:course.id,enrollment:enrollment.id})}` };
     return {
       label: enrollment.status === "completed" || progress >= 100 ? "Review" : progress > 0 ? "Continue" : "Start",
       href: `lms-course-player.html?course=${encodeURIComponent(course.id)}&enrollment=${encodeURIComponent(enrollment.id)}`
@@ -160,7 +162,7 @@
   // Extensions belong to a specific existing enrollment, not a new catalog course.
   function renderExtensionOption(){
     const eligible = state.enrollments.filter(row =>
-      row?.id && row?.course_id && (row.status === "active" || row.status === "completed")
+      row?.id && row?.course_id && (row.status === "active" || row.status === "completed" || row.status === "expired")
       && state.courses.some(course => course.id === row.course_id)
     );
     const options = eligible.map(row => {
@@ -220,7 +222,7 @@
         ${course.short_description ? `<p>${esc(course.short_description)}</p>` : ""}
         <div class="course-library-meta">
           ${course.certificate_enabled ? `<span class="badge">Certificate</span>` : ""}
-          ${enrollment?.expires_at ? `<span class="badge">Access through ${esc(new Intl.DateTimeFormat("en-US", {month:"short", day:"numeric", year:"numeric"}).format(new Date(enrollment.expires_at)))}</span>` : ""}
+          ${enrollment?.expires_at ? `<span class="badge">${status === "Access Expired" ? "Access ended" : "Access through"} ${esc(new Intl.DateTimeFormat("en-US", {month:"short", day:"numeric", year:"numeric"}).format(new Date(enrollment.expires_at)))}</span>` : ""}
         </div>
         ${enrollment ? `<div class="course-library-progress"><div class="course-library-progress-head"><span>Progress</span><span>${progress}%</span></div><div class="course-library-progress-track"><span style="width:${progress}%"></span></div></div>` : ""}
         <div class="course-library-actions"><a class="btn primary" href="${action.href}">${esc(action.label)}</a></div>
@@ -269,7 +271,7 @@
       db.from("lms_enrollments")
         .select("id,course_id,status,progress_percent,enrolled_at,completed_at,last_activity_at,expires_at")
         .eq("user_id", userId)
-        .in("status", ["active", "completed"])
+        .in("status", ["active", "completed", "expired"])
     ]);
 
     if (courseResult.error) throw courseResult.error;
