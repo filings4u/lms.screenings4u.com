@@ -68,11 +68,16 @@ async function init(){
  const courses=await fetchRows(db.from("lms_courses").select("id,slug,title,short_description,description,status,certificate_enabled,navigation_mode").eq("status","published").order("title"));
  const course=courses.find(c=>c.id===courseId||c.slug===slug);
  if(!course)throw Error("Course not found in published LMS catalog.");
- const [enrollments,sections]=await Promise.all([
+ // Paid lesson bodies stay protected by RLS; this RPC exposes only published
+ // module/lesson headings and durations for the pre-purchase catalog preview.
+ const [enrollments,outlineResult]=await Promise.all([
   fetchRows(db.from("lms_enrollments").select("id,course_id,user_id,status,progress_percent,expires_at").eq("user_id",user.id).eq("course_id",course.id).in("status",["active","completed"])),
-  fetchRows(db.from("lms_sections").select("id,course_id,title,sort_order,is_published").eq("course_id",course.id).eq("is_published",true).order("sort_order"))
+  db.rpc("lms_course_published_outline",{p_course_id:course.id})
  ]);
- let lessons=[];if(sections.length)lessons=await fetchRows(db.from("lms_lessons").select("id,section_id,title,status,sort_order,estimated_minutes").in("section_id",sections.map(x=>x.id)).eq("status","published").order("sort_order"));
+ if(outlineResult.error)throw outlineResult.error;
+ const outline=outlineResult.data||{};
+ const sections=Array.isArray(outline.sections)?outline.sections:[];
+ const lessons=Array.isArray(outline.lessons)?outline.lessons:[];
  render(course,enrollments[0]||null,sections,lessons,courses);
  }catch(e){console.error("[Course Details]",e);document.getElementById("content").innerHTML=`<div class="panel detail-pad"><h2>Unable to load course</h2><p>${esc(e.message||"Please try again.")}</p><a class="btn primary" href="lms-courses.html">Return to Course Library</a></div>`}
 }
