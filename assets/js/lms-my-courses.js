@@ -50,6 +50,7 @@
   };
   const statusLabel = row => {
     const progress = pct(row.progress_percent);
+    if (row.status === "expired" || (row.expires_at && new Date(row.expires_at).getTime() <= Date.now())) return "Access Expired";
     if (row.status === "completed" || progress >= 100) return "Completed";
     if (progress > 0) return "In Progress";
     return "Not Started";
@@ -147,7 +148,7 @@
       .from("lms_enrollments")
       .select("id,course_id,status,progress_percent,enrolled_at,started_at,completed_at,last_activity_at,expires_at,course:lms_courses(id,slug,title,short_description,status,certificate_enabled)")
       .eq("user_id", userId)
-      .in("status", ["active", "completed"])
+      .in("status", ["active", "completed", "expired"])
       .order("last_activity_at", {ascending:false, nullsFirst:false});
     if (enrollmentError) throw enrollmentError;
 
@@ -169,14 +170,16 @@
   }
 
   function renderCourses(rows, certificates){
-    const active = rows.filter(row => row.status === "active" && pct(row.progress_percent) < 100);
-    const completed = rows.filter(row => row.status === "completed" || pct(row.progress_percent) >= 100);
+    const active = rows.filter(row => row.status === "active" && (!row.expires_at || new Date(row.expires_at).getTime() > Date.now()) && pct(row.progress_percent) < 100);
+    const expired = rows.filter(row => row.status === "expired" || (row.expires_at && new Date(row.expires_at).getTime() <= Date.now()));
+    const completed = rows.filter(row => !expired.includes(row) && (row.status === "completed" || pct(row.progress_percent) >= 100));
     const avgProgress = rows.length ? Math.round(rows.reduce((sum,row) => sum + pct(row.progress_percent), 0) / rows.length) : 0;
     const inProgress = active.filter(row => pct(row.progress_percent) > 0);
 
     const metrics = [
       ["Active Courses", active.length, "Training in progress"],
       ["Completed Courses", completed.length, "Finished enrollments"],
+      ["Expired Access", expired.length, "Previous enrollments shown"],
       ["Average Progress", `${avgProgress}%`, "Across assigned courses"],
       ["Certificates", certificates.length, "Issued certificates"]
     ];
@@ -186,14 +189,19 @@
       return `<a class="attention-row" href="lms-course-player.html?course=${encodeURIComponent(row.course.id)}&enrollment=${encodeURIComponent(row.id)}"><div><strong>${esc(row.course.title)}</strong><span>${progress}% complete${row.last_activity_at ? ` · Last activity ${esc(fmtDate(row.last_activity_at))}` : ""}</span></div><span>→</span></a>`;
     }).join("");
 
-    const tableRows = rows.map(row => {
+    const sortedRows = [...rows].sort((a,b) => Number(b.course.slug === "dot-specimen-collector-training") - Number(a.course.slug === "dot-specimen-collector-training") || Number(a.status === "expired") - Number(b.status === "expired"));
+    const tableRows = sortedRows.map(row => {
       const progress = pct(row.progress_percent);
       const status = statusLabel(row);
       const certificate = certificates.find(item => item.enrollment_id === row.id);
       let href = `lms-course-player.html?course=${encodeURIComponent(row.course.id)}&enrollment=${encodeURIComponent(row.id)}`;
       let action = progress > 0 ? "Continue" : "Start";
 
-      if (status === "Completed" && certificate){
+      if (status === "Access Expired") {
+        const params = new URLSearchParams({product:"training-course-extension-30-days",course:row.course.id,enrollment:row.id});
+        href = "lms-checkout.html?" + params.toString();
+        action = "Extend Access · $115";
+      } else if (status === "Completed" && certificate){
         href = `lms-certificates.html?certificate=${encodeURIComponent(certificate.id)}`;
         action = "Certificate";
       } else if (status === "Completed") {
@@ -201,7 +209,7 @@
       }
 
       return `<tr>
-        <td><strong>${esc(row.course.title)}</strong>${row.course.short_description ? `<small>${esc(row.course.short_description)}</small>` : ""}</td>
+        <td><strong>${esc(row.course.title)}</strong>${row.course.slug?.includes("train-the-trainer") || row.course.slug?.includes("plus-hair") ? '<small class="enrollment-package-label">Collector training package · separate course enrollment</small>' : ""}${row.course.short_description ? `<small>${esc(row.course.short_description)}</small>` : ""}${status === "Access Expired" ? '<small>Previous course record — progress preserved; access requires an extension.</small>' : ""}</td>
         <td>${progress}%</td>
         <td>${badge(status)}</td>
         <td>${row.enrolled_at ? esc(fmtDate(row.enrolled_at)) : ""}</td>
@@ -215,7 +223,7 @@
     content.innerHTML = `
       <div class="metrics">${metrics.map(item => metric(...item)).join("")}</div>
       ${continueRows ? `<div class="section"><div class="panel"><div class="panel-head"><div><h2>Continue Learning</h2><p>Active courses you have already started.</p></div></div><div class="snapshot-attention">${continueRows}</div></div></div>` : ""}
-      ${tableRows ? `<div class="section"><div class="panel"><div class="panel-head"><div><h2>My Courses</h2><p>All active and completed Learning Center enrollments.</p></div><a class="snapshot-link" href="lms-courses.html">Course Library</a></div><div class="table-wrap"><table><thead><tr><th>Course</th><th>Progress</th><th>Status</th><th>Enrolled</th><th>Access Through</th><th>Last Activity</th><th></th></tr></thead><tbody>${tableRows}</tbody></table></div></div></div>` : ""}`;
+      ${tableRows ? `<div class="section"><div class="panel"><div class="panel-head"><div><h2>My Courses</h2><p>All current and previous Learning Center enrollments, including expired access.</p></div><a class="snapshot-link" href="lms-courses.html">Course Library</a></div><div class="table-wrap"><table><thead><tr><th>Course</th><th>Progress</th><th>Status</th><th>Enrolled</th><th>Access Through</th><th>Last Activity</th><th></th></tr></thead><tbody>${tableRows}</tbody></table></div></div></div>` : ""}`;
   }
 
   async function init(){
