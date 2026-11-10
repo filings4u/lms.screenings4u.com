@@ -1,0 +1,96 @@
+/* Workforce Training course player refresh: isolate player scroll from page scroll */
+body.lms-course-player-immersive{
+ --player-navy:#011a3b;--player-gold:#ffb719;--player-blue:#07549d;
+ background:#f1f5fa;color:#001b3e;font-size:13px;
+}
+@media(min-width:981px){
+ html:has(body.lms-course-player-immersive),body.lms-course-player-immersive{height:100%;overflow:hidden}
+ body.lms-course-player-immersive .course-player-shell{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+ body.lms-course-player-immersive .course-player-layout{flex:1;min-height:0;height:auto;overflow:hidden}
+ body.lms-course-player-immersive .course-player-main{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+ body.lms-course-player-immersive .course-player-sidebar{height:100%;min-height:0;overflow:hidden}
+ body.lms-course-player-immersive .course-player-sidebar-scroll{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+ body.lms-course-player-immersive.course-curriculum-hidden .course-player-layout{grid-template-columns:minmax(0,1fr)}
+}
+body.lms-course-player-immersive .course-player-topbar{
+ height:66px;min-height:66px;position:relative;top:auto;padding:0 27px;
+ background:#011a3b;border-bottom:1px solid #183e69;box-shadow:0 4px 16px #01122f12;
+}
+body.lms-course-player-immersive .course-player-brand{display:inline-flex;align-items:center;height:100%;min-width:0}
+body.lms-course-player-immersive .course-player-brand img{display:block;width:181px;max-height:53px;height:auto;object-fit:contain;object-position:left center}
+body.lms-course-player-immersive .course-player-tool,body.lms-course-player-immersive .course-player-exit{
+ min-height:36px;height:36px;padding:0 13px;border-radius:8px;border:1px solid #49617e;
+ background:#092a51;color:#fff;font-size:11px;font-weight:800;box-shadow:none;
+}
+body.lms-course-player-immersive .course-player-tool:hover,body.lms-course-player-immersive .course-player-exit:hover{background:#17426e;border-color:#8aa4c6}
+body.lms-course-player-immersive .course-player-tool:focus-visible,body.lms-course-player-immersive .course-player-exit:focus-visible,body.lms-course-player-immersive button:focus-visible{outline:3px solid #ffba22;outline-offset:2px}
+body.lms-course-player-immersive .course-player-header{
+ flex:0 0 auto;min-height:100px;padding:17px 28px 18px;
+ grid-template-columns:minmax(0,1fr) 260px;gap:26px;
+ background:linear-gradient(103deg,#031b3b,#082d55 74%,#0e477f);
+}
+body.lms-course-player-immersive .course-player-kicker{font-size:9px!important;letter-spacing:.11em;color:#ffbd32!important;margin-bottom:5px}
+body.lms-course-player-immersive .course-player-title{font-size:clamp(19px,1.75vw,25px)!important;line-height:1.2!important;letter-spacing:-.025em!important;font-weight:850}
+body.lms-course-player-immersive .course-player-subtitle{font-size:11px!important;line-height:1.5!important;max-width:950px;margin-top:5px}
+body.lms-course-player-immersive .course-player-progress-label{font-size:10px!important;margin-bottom:7px}
+body.lms-course-player-immersive .course-player-progress-label strong{font-size:14px}
+body.lms-course-player-immersive .course-player-progress-track{height:7px}
+body.lms-course-player-immersive .course-player-progress-fill{background:var(--player-gold)}
+body.lms-course-player-immersive .course-player-layout{grid-template-columns:minmax(0,1fr) 322px}
+body.lms-course-player-immersive .course-player-main{padding:17px 19px 28px;min-width:0}
+body.lms-course-player-immersive .course-player-stage{border-radius:13px;border:1px solid #d6e3ef;box-shadow:0 7px 22px #01122f0b}
+body.lms-course-player-immersive .course-player-stage-top{padding:14px 19px;background:#f8fbff;gap:13px}
+body.lms-course-player-immersive .course-player-module-tag{font-size:9px;color:#d48b00;margin-bottom:5px;letter-spacing:.09em}
+body.lms-course-player-immersive .course-player-stage-label{font-size:11px;color:#274a71}
+body.lms-course-player-immersive .course-player-lesson-count{font-size:10px}
+body.lms-course-player-immersive .course-player-lesson-panel{min-height:0}
+body.lms-course-player-immersive .course-player-content-inner{padding:23px 25px 26px}
+body.lms-course-player-immersive .course-player-lesson-title{font-size:clamp(21px,2vw,26px)!important;line-height:1.25;margin:0 0 8px;color:#001b3e}
+body.lms-course-player-immersive .course-player-lesson-intro{font-size:12px!important;line-height:1.55!important;color:#607a93}
+body.lms-course-player-immersive .course-player-runtime-blocks{margin-top:19px!important;gap:17px!important}
+body.lms-course-player-immersive .course-player-block{margin-top:0!important}
+body.lms-course-player-immersive .course-player-video-frame{aspect-ratio:16/9!important;border-radius:10px!important;max-height:none!important}
+body.lms-course-player-immersive .course-player-video-frame iframe{display:block;width:100%!important;height:100%!important;min-height:0!important;aspect-ratio:16/9}
+body.lms-course-player-immersive .course-player-embed-frame iframe{width:100%;min-height:300px}
+body.lms-course-player-immersive .course-player-stage-footer{padding:13px 19px;background:#f9fbfe}
+body.lms-course-player-immersive .course-player-prev,body.lms-course-player-immersive .course-player-next{min-height:38px;font-size:11px;padding:0 13px;border-radius:8px}
+body.lms-course-player-immersive .course-player-next{background:#ffb91e;border-color:#eba700;color:#001b3e}
+body.lms-course-player-immersive .course-player-next:hover{background:#ffca44}
+body.lms-course-player-immersive .course-player-prev{border-color:#bbcee4;color:#124b88}
+body.lms-course-player-immersive .course-player-sidebar{background:#fff;border-left:1px solid #dce5f0}
+body.lms-course-player-immersive .course-player-sidebar-head{padding:17px 18px 14px;background:#fff}
+body.lms-course-player-immersive .course-player-sidebar-kicker{font-size:9px;color:#d08b00;letter-spacing:.11em}
+body.lms-course-player-immersive .course-player-sidebar-title{font-size:17px;color:#001b3e;font-weight:850}
+body.lms-course-player-immersive .course-player-sidebar-scroll{padding:3px 0}
+body.lms-course-player-immersive .course-player-module-button{padding:12px 14px}
+body.lms-course-player-immersive .course-player-module-number{background:#eaf2fb;color:#0b5ab0}
+body.lms-course-player-immersive .course-player-module-name{font-size:11px}
+body.lms-course-player-immersive .course-player-lessons{padding:0 9px 8px}
+body.lms-course-player-immersive .course-player-lesson-link{padding:9px 9px}
+body.lms-course-player-immersive .course-player-lesson-name{font-size:11px}
+body.lms-course-player-immersive .course-player-lesson-meta{font-size:9px}
+body.lms-course-player-immersive .course-player-lesson-link.is-active{background:#e9f3ff;color:#014785}
+body.lms-course-player-immersive .course-player-lesson-link.is-locked{opacity:.68}
+body.lms-course-player-immersive .course-player-sidebar-footer{font-size:10px;padding:12px 16px}
+@media(max-width:980px){
+ body.lms-course-player-immersive .course-player-layout{display:block;min-height:0}
+ body.lms-course-player-immersive .course-player-sidebar{top:66px;bottom:0;max-height:calc(100dvh - 66px)}
+ body.lms-course-player-immersive .course-player-main{padding:14px}
+ body.lms-course-player-immersive .course-player-header{grid-template-columns:1fr;gap:12px;padding:17px 19px}
+ body.lms-course-player-immersive .course-player-progress-summary{max-width:370px}
+}
+@media(max-width:640px){
+ body.lms-course-player-immersive .course-player-topbar{height:60px;min-height:60px;padding:0 13px}
+ body.lms-course-player-immersive .course-player-brand img{width:141px;max-height:43px}
+ body.lms-course-player-immersive .course-player-tool,body.lms-course-player-immersive .course-player-exit{height:36px;width:38px;padding:0}
+ body.lms-course-player-immersive .course-player-topbar-actions{gap:6px}
+ body.lms-course-player-immersive .course-player-header{padding:15px 14px}
+ body.lms-course-player-immersive .course-player-title{font-size:19px!important}
+ body.lms-course-player-immersive .course-player-main{padding:10px}
+ body.lms-course-player-immersive .course-player-stage-top{padding:12px}
+ body.lms-course-player-immersive .course-player-content-inner{padding:18px 14px}
+ body.lms-course-player-immersive .course-player-lesson-title{font-size:21px!important}
+ body.lms-course-player-immersive .course-player-stage-footer{padding:12px}
+ body.lms-course-player-immersive .course-player-video-frame iframe{min-height:0!important}
+ body.lms-course-player-immersive .course-player-sidebar{top:60px;max-height:calc(100dvh - 60px)}
+}
