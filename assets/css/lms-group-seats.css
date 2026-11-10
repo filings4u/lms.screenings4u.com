@@ -1,1 +1,77 @@
 .group-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.seat-card{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden}.seat-card-head{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.seat-card-head h3{margin:0;color:var(--navy);font-size:.875rem}.seat-card-head p{margin:4px 0 0;color:var(--muted);font-size:.625rem;line-height:1.45}.seat-count{white-space:nowrap;color:var(--navy);font-weight:900;font-size:.6875rem}.seat-count small{display:block;color:var(--muted);font-size:.5625rem;font-weight:700;text-align:right;margin-top:2px}.seat-body{padding:16px}.seat-bar{height:7px;border-radius:999px;background:#edf2f7;overflow:hidden;margin:0 0 15px}.seat-bar>span{display:block;height:100%;background:var(--orange)}.seat-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px;border:1px solid #e2e9f1;border-radius:11px;background:#f8fafc}.seat-form .field{margin:0}.seat-form .field.full,.seat-form-actions{grid-column:1/-1}.seat-form input{width:100%;min-height:40px;border:1px solid #cbd8e5;border-radius:8px;background:#fff;padding:8px 10px;color:var(--ink);outline:none}.seat-form input:focus{border-color:#8eadd0;box-shadow:0 0 0 3px rgba(36,70,127,.08)}.seat-form-actions{display:flex;justify-content:flex-end}.assignment-list{margin-top:14px;border:1px solid #e3eaf2;border-radius:11px;overflow:hidden}.assignment-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1.6fr) auto auto;gap:10px;align-items:center;padding:11px 12px;border-top:1px solid #edf1f5;font-size:.65625rem}.assignment-row:first-child{border-top:0}.assignment-row strong{color:var(--navy)}.assignment-row span{color:var(--muted);overflow-wrap:anywhere}.seat-message{display:none;margin-bottom:14px;padding:11px 13px;border-radius:9px;font-size:.65625rem;font-weight:750}.seat-message.good{display:block;background:#e8f6ee;color:var(--good);border:1px solid #c9e8d7}.seat-message.bad{display:block;background:#fdeaea;color:var(--bad);border:1px solid #efc9c9}.seat-empty{padding:24px 16px;text-align:center;color:var(--muted);font-size:.65625rem}.seat-toolbar{display:flex;gap:8px;align-items:center}.seat-revoke{border:1px solid #e4c8c8;background:#fff7f7;color:var(--bad);border-radius:7px;padding:6px 8px;font-size:.5625rem;font-weight:850;cursor:pointer}.purchase-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.purchase-meta span{display:inline-flex;padding:4px 7px;border-radius:999px;background:#edf3fb;color:var(--blue);font-size:.5625rem;font-weight:800}@media(max-width:1000px){.group-grid{grid-template-columns:1fr}}@media(max-width:700px){.seat-form{grid-template-columns:1fr}.seat-form .field.full,.seat-form-actions{grid-column:auto}.assignment-row{grid-template-columns:1fr}.seat-card-head{flex-direction:column}.seat-count small{text-align:left}}
+
+/* Workforce Training Group Seats redesign */
+body[data-portal-page="group-seats"] .app .content{padding-top:16px!important}
+body[data-portal-page="group-seats"] .app .hero{
+ position:relative!important;min-height:145px!important;padding:25px 30px 24px 58px!important;
+ margin:0 0 15px!important;border-radius:16px!important;
+ background:linear-gradient(106deg,rgba(0,21,51,.98),rgba(4,40,81,.97) 55%,rgba(6,48,88,.58) 100%),url("../images/group-hero.png") right center/auto 155% no-repeat!important;
+}
+body[data-portal-page="group-seats"] .app .hero::before{content:"";position:absolute;left:27px;top:23px;bottom:23px;width:5px;border-radius:5px;background:#ffa700}
+body[data-portal-page="group-seats"] .app .hero-kicker{font-size:10px!important;color:#ffc13f!important}
+body[data-portal-page="group-seats"] .app .hero h1{font-size:clamp(29px,2.9vw,39px)!important;margin:6px 0 8px!important}
+body[data-portal-page="group-seats"] .app .hero p{font-size:13px!important;line-height:1.5!important;max-width:790px!important}
+body[data-portal-page="group-seats"] .app .hero-actions{display:flex!important;margin-top:15px!important}
+body[data-portal-page="group-seats"] .app .hero-actions .btn.primary{
+ display:inline-flex;align-items:center;justify-content:center;
+ padding:10px 16px!important;min-height:36px;border-radius:8px!important;
+ background:#ffbb27!important;color:#001533!important;border:1px solid #e9a400!important;
+ font-size:11px!important;font-weight:850!important;text-decoration:none!important
+}
+body[data-portal-page="group-seats"] #content{margin:0!important}
+body[data-portal-page="group-seats"] #content *{box-sizing:border-box}
+body[data-portal-page="group-seats"] .wt-seats-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:15px}
+body[data-portal-page="group-seats"] .wt-seats-stat{
+ display:flex;align-items:center;gap:13px;min-width:0;min-height:98px;
+ background:#fff;padding:15px;border-radius:14px;border:1px solid #d6e2ef;
+ box-shadow:0 7px 20px rgba(0,21,51,.045)
+}
+body[data-portal-page="group-seats"] .wt-seats-stat-icon{
+ display:grid;place-items:center;flex:0 0 45px;width:45px;height:45px;
+ border-radius:50%;background:#eaf3ff;color:#0059c4;font-size:22px;font-weight:900
+}
+body[data-portal-page="group-seats"] .wt-seats-stat:nth-child(2) .wt-seats-stat-icon{background:#fff4df;color:#da9400}
+body[data-portal-page="group-seats"] .wt-seats-stat:nth-child(3) .wt-seats-stat-icon{background:#e6f7eb;color:#14834c}
+body[data-portal-page="group-seats"] .wt-seats-stat:nth-child(4) .wt-seats-stat-icon{background:#eaf3ff;color:#0059c4}
+body[data-portal-page="group-seats"] .wt-seats-stat>div{min-width:0}
+body[data-portal-page="group-seats"] .wt-seats-stat small{display:block;font-size:11px;line-height:1.35;font-weight:850;color:#36506d}
+body[data-portal-page="group-seats"] .wt-seats-stat strong{display:block;font-size:27px;line-height:1.2;color:#001533;font-weight:900;margin:3px 0}
+body[data-portal-page="group-seats"] .wt-seats-stat div>span{display:block;font-size:10px;line-height:1.4;color:#607891}
+body[data-portal-page="group-seats"] .wt-seats-panel{background:#fff;border:1px solid #d6e2ef;border-radius:15px;box-shadow:0 8px 21px rgba(0,21,51,.05);overflow:hidden}
+body[data-portal-page="group-seats"] .wt-seats-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 21px;border-bottom:1px solid #e7eef6}
+body[data-portal-page="group-seats"] .wt-seats-panel-head h2{font-size:19px!important;font-weight:900!important;color:#001533!important;margin:0!important}
+body[data-portal-page="group-seats"] .wt-seats-panel-head p{font-size:11px;color:#607891;margin:5px 0 0;line-height:1.5}
+body[data-portal-page="group-seats"] .wt-seats-package-count{display:inline-flex;padding:6px 10px;border-radius:999px;background:#edf4ff;color:#0059c4;font-size:11px;font-weight:850;white-space:nowrap}
+body[data-portal-page="group-seats"] .wt-seats-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:270px;padding:32px 18px}
+body[data-portal-page="group-seats"] .wt-seats-empty-icon{display:grid;place-items:center;width:70px;height:70px;border-radius:18px;background:#eaf3ff;color:#0059c4;font-size:33px;font-weight:900}
+body[data-portal-page="group-seats"] .wt-seats-empty h3{color:#001533;font-size:19px;font-weight:900;margin:15px 0 7px}
+body[data-portal-page="group-seats"] .wt-seats-empty p{font-size:12px;color:#607891;max-width:440px;line-height:1.65;margin:0 0 17px}
+body[data-portal-page="group-seats"] .wt-seats-cta{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 17px;border-radius:8px;border:1px solid #e9a50e;background:linear-gradient(180deg,#ffd05a,#ffb31f);color:#001533!important;text-decoration:none;font-size:11px;font-weight:850;white-space:normal;text-align:center}
+body[data-portal-page="group-seats"] .wt-seats-cta.outline{background:#fff;border-color:#1772d2;color:#0059c4!important}
+body[data-portal-page="group-seats"] .group-grid{padding:16px;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+body[data-portal-page="group-seats"] .seat-card{border:1px solid #d8e3f0;border-radius:12px;box-shadow:0 6px 15px rgba(0,21,51,.045)}
+body[data-portal-page="group-seats"] .seat-card-head{padding:17px}
+body[data-portal-page="group-seats"] .seat-card-head h3{color:#001533;font-size:14px;font-weight:850;line-height:1.35}
+body[data-portal-page="group-seats"] .seat-count{color:#0059c4;font-size:12px}
+body[data-portal-page="group-seats"] .seat-bar{height:8px;background:#e2eaf4}
+body[data-portal-page="group-seats"] .seat-bar>span{background:linear-gradient(90deg,#ffc842,#ffa700)}
+body[data-portal-page="group-seats"] .seat-form{background:#f4f8fc;border-color:#d9e5f0;padding:14px}
+body[data-portal-page="group-seats"] .seat-form input{border-color:#cbd9e9;min-height:42px}
+body[data-portal-page="group-seats"] .seat-form input:focus{outline:2px solid #ffbb27;outline-offset:1px}
+body[data-portal-page="group-seats"] .seat-form .btn.primary{min-height:40px;border-radius:8px;background:#ffb827;color:#001533;font-weight:850}
+body[data-portal-page="group-seats"] .seat-revoke{min-height:32px}
+body[data-portal-page="group-seats"] .wt-seats-help{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:15px;background:#fff;border:1px solid #d6e2ef;border-radius:14px;padding:19px 22px}
+body[data-portal-page="group-seats"] .wt-seats-help h2{margin:0 0 5px;color:#001533;font-size:17px;font-weight:900}
+body[data-portal-page="group-seats"] .wt-seats-help p{margin:0;color:#607891;font-size:11px;line-height:1.5}
+@media(max-width:1100px){body[data-portal-page="group-seats"] .wt-seats-stats{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-portal-page="group-seats"] .group-grid{grid-template-columns:1fr}}
+@media(max-width:700px){body[data-portal-page="group-seats"] .wt-seats-help{flex-direction:column;align-items:flex-start}body[data-portal-page="group-seats"] .wt-seats-panel-head{align-items:flex-start;flex-wrap:wrap}}
+@media(max-width:540px){
+ body[data-portal-page="group-seats"] .app .hero{padding:21px 17px 21px 37px!important}
+ body[data-portal-page="group-seats"] .app .hero::before{left:18px}
+ body[data-portal-page="group-seats"] .wt-seats-stats{gap:8px}
+ body[data-portal-page="group-seats"] .wt-seats-stat{padding:10px;gap:8px;min-height:85px}
+ body[data-portal-page="group-seats"] .wt-seats-stat-icon{flex-basis:32px;width:32px;height:32px;font-size:17px}
+ body[data-portal-page="group-seats"] .wt-seats-stat strong{font-size:22px}
+ body[data-portal-page="group-seats"] .group-grid{padding:10px}
+ body[data-portal-page="group-seats"] .wt-seats-help .wt-seats-cta{width:100%}
+}
