@@ -796,3 +796,88 @@ body[data-portal-page="certificates"] .wt-cert-viewer #certificateBody{padding:1
  body[data-portal-page="certificates"] #certificateViewer .wt-cert-panel-head{display:none!important}
  body[data-portal-page="certificates"] .app .main{width:100%!important;overflow:visible!important}
 }
+
+/* Live Training — align with approved Concept 3 portal branding. */
+body[data-portal-page="live-training"] .app .content.live-page-content{
+ box-sizing:border-box!important;width:calc(100% - 48px)!important;
+ max-width:1450px!important;margin:0 auto!important;padding:17px 0 42px!important;
+ background:transparent!important;min-height:0!important;
+}
+body[data-portal-page="live-training"] .live-hero{
+ min-height:182px!important;align-items:center!important;margin:0 0 16px!important;
+ padding:24px 35px!important;border-radius:16px!important;
+ background:linear-gradient(106deg,#001533 0%,#073967 64%,#135187 100%)!important;
+ box-shadow:0 10px 24px rgba(0,21,51,.11)!important;
+}
+body[data-portal-page="live-training"] .live-hero:before{
+ content:"";position:absolute;left:20px;top:25px;bottom:25px;width:5px;
+ border-radius:5px;background:#ffa700;z-index:2;
+}
+body[data-portal-page="live-training"] .live-hero-copy{padding-left:14px!important;max-width:850px!important}
+body[data-portal-page="live-training"] .live-hero-kicker{color:#ffbd2e!important;font-size:10px!important;letter-spacing:.12em!important}
+body[data-portal-page="live-training"] .live-hero h1{font-size:clamp(29px,2.7vw,39px)!important;line-height:1.14!important;margin:7px 0 8px!important}
+body[data-portal-page="live-training"] .live-hero-copy>p{font-size:13px!important;line-height:1.6!important}
+body[data-portal-page="live-training"] .live-hero-features{margin-top:20px!important;gap:20px!important;flex-wrap:wrap!important}
+body[data-portal-page="live-training"] .hero-feature{min-width:0!important;gap:9px!important}
+body[data-portal-page="live-training"] .hero-feature-icon{width:38px!important;height:38px!important;border-radius:10px!important}
+body[data-portal-page="live-training"] .hero-feature-icon.orange{background:#ffa700!important;color:#001533!important}
+body[data-portal-page="live-training"] .hero-feature-icon.blue{background:#1769ba!important}
+body[data-portal-page="live-training"] .hero-feature strong{font-size:11px!important}
+body[data-portal-page="live-training"] .hero-feature span:not(.hero-feature-icon){font-size:10px!important;line-height:1.4!important}
+body[data-portal-page="live-training"] .live-hero-visual{min-width:260px!important;max-width:320px!important}
+body[data-portal-page="live-training"] .hero-screen{width:235px!important;height:124px!important;transform:none!important;background:#0c2b4d!important;border:5px solid #09223f!important;border-radius:11px!important}
+body[data-portal-page="live-training"] .hero-screen strong{font-size:14px!important}
+body[data-portal-page="live-training"] .hero-screen>span{color:#c7d8e9!important;font-size:10px!important;margin-top:4px}
+body[data-portal-page="live-training"] .hero-screen-cap .lt-icon{color:#ffba24!important;width:35px!important;height:35px!important}
+body[data-portal-page="live-training"] .live-hero .hero-orbit.one{border-bottom-color:rgba(255,167,0,.75)!important}
+body[data-portal-page="live-training"] .empty-live-card{
+ padding:27px 24px 30px!important;min-height:230px!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:center!important;border:1px solid #d7e3f0!important;
+ border-radius:15px!important;box-shadow:0 8px 22px rgba(0,21,51,.055)!important;
+}
+body[data-portal-page="live-training"] .empty-live-card .session-cap{width:59px!important;height:59px!important;border-radius:15px!important;margin-bottom:12px!important}
+body[data-portal-page="live-training"] .empty-live-card .session-cap .lt-icon{width:32px!important;height:32px!important}
+body[data-portal-page="live-training"] .section-kicker{color:#d88f00!important}
+body[data-portal-page="live-training"] .empty-live-card h2{font-size:21px!important;color:#001533!important;margin:9px 0 7px!important}
+body[data-portal-page="live-training"] .empty-live-card p{max-width:510px!important;line-height:1.6!important;font-size:12px!important;margin:0!important}
+body[data-portal-page="live-training"] .empty-live-actions{margin-top:17px!important;gap:12px!important}
+body[data-portal-page="live-training"] .join-live-primary:not(.disabled){
+ background:linear-gradient(180deg,#ffcc4a,#ffb11c)!important;color:#001533!important;
+ box-shadow:0 7px 18px rgba(255,176,14,.14)!important;
+}
+body[data-portal-page="live-training"] .my-appointments-btn{border:1px solid #1167cb!important;color:#0059c4!important}
+body[data-portal-page="live-training"] .lt-live-support-empty{margin-top:0!important}
+body[data-portal-page="live-training"] .before-you-join-card,
+body[data-portal-page="live-training"] .need-help-card,
+body[data-portal-page="live-training"] .session-overview-card,
+body[data-portal-page="live-training"] .session-status-card{
+ border-color:#d7e3f0!important;border-radius:15px!important;box-shadow:0 7px 18px rgba(0,21,51,.045)!important
+}
+body[data-portal-page="live-training"] .live-content{gap:14px!important}
+body[data-portal-page="live-training"] .live-support-grid{gap:14px!important}
+body[data-portal-page="live-training"] .live-support-grid .prep-items{margin-top:20px!important}
+body[data-portal-page="live-training"] .session-heading-row h2{color:#001533!important}
+body[data-portal-page="live-training"] .live-error-card{border-color:#d7e3f0!important}
+@media(max-width:1050px){
+ body[data-portal-page="live-training"] .live-hero-visual{display:none!important}
+ body[data-portal-page="live-training"] .live-hero-features{gap:13px!important}
+}
+@media(max-width:820px){
+ body[data-portal-page="live-training"] .app .content.live-page-content{
+  width:calc(100% - 30px)!important;padding:16px 0 35px!important;
+ }
+ body[data-portal-page="live-training"] .live-hero{min-height:180px!important;padding:27px 25px 25px 30px!important}
+ body[data-portal-page="live-training"] .live-hero:before{left:15px!important}
+ body[data-portal-page="live-training"] .live-hero-copy{padding-left:0!important}
+ body[data-portal-page="live-training"] .live-hero-features{display:flex!important;flex-wrap:wrap!important}
+}
+@media(max-width:560px){
+ body[data-portal-page="live-training"] .app .content.live-page-content{width:calc(100% - 24px)!important}
+ body[data-portal-page="live-training"] .live-hero{padding:26px 19px 25px 34px!important}
+ body[data-portal-page="live-training"] .live-hero h1{font-size:28px!important}
+ body[data-portal-page="live-training"] .live-hero-features{display:grid!important;grid-template-columns:1fr!important;gap:11px!important;margin-top:16px!important}
+ body[data-portal-page="live-training"] .empty-live-actions{width:100%!important;flex-direction:column!important}
+ body[data-portal-page="live-training"] .empty-live-actions>*{width:100%!important}
+ body[data-portal-page="live-training"] .empty-live-card{padding:26px 17px!important}
+}
