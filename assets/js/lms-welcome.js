@@ -1783,7 +1783,7 @@
 
 /* SOURCE: assets/js/lms-welcome.js?v=20260927-onboarding4 */
 /**
- * screenings4u Learning Center — Welcome & Policies
+ * Workforce Training by screenings4u — Welcome & Policies
  * Page-only onboarding form behavior. Shared auth/navigation stay in their own files.
  */
 (() => {
@@ -1817,7 +1817,7 @@
       const err = data?.error;
       const message = typeof err === "string"
         ? err
-        : (err?.message || data?.message || `Learning Center request failed (${response.status}).`);
+        : (err?.message || data?.message || `Workforce Training by screenings4u request failed (${response.status}).`);
       throw new Error(message);
     }
     return data;
@@ -1957,7 +1957,7 @@
       }
 
       if (!values.acceptedTerms || !values.acceptedRefund || !values.acceptedDisclaimer || !values.acceptedMock) {
-        setStatus("Please review and accept all four Learning Center acknowledgments before submitting.", true);
+        setStatus("Please review and accept all four Workforce Training by screenings4u acknowledgments before submitting.", true);
         return;
       }
 
@@ -1972,7 +1972,7 @@
         setStatus("Onboarding complete. Your signed acknowledgment has been saved to Documents.");
         if (window.S4UPopup?.success) {
           await window.S4UPopup.success(
-            "Your signed Learning Center acknowledgment has been saved to Documents. Your course access is now unlocked.",
+            "Your signed Workforce Training by screenings4u acknowledgment has been saved to Documents. Your course access is now unlocked.",
             "Onboarding Complete",
             { confirmText: "Continue" }
           );

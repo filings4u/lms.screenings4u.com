@@ -1,4 +1,4 @@
-/* SCREENINGS4U LEARNING CENTER — COURSE PLAYER */
+/* Workforce Training by screenings4u — COURSE PLAYER */
 (() => {
   "use strict";
   const SUPABASE_URL = "https://elpbnytpciqnbexiaebp.supabase.co";
@@ -569,7 +569,7 @@
   function renderCourseHeader() {
     setText(
       ".course-player-kicker",
-      "Learning Center"
+      "Workforce Training by screenings4u"
     );
 
     setText(

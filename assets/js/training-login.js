@@ -1758,7 +1758,7 @@
       }
 
       setStatus(
-        "Access verified. Opening the Learning Center...",
+        "Access verified. Opening the Workforce Training by screenings4u...",
         "success"
       );
 

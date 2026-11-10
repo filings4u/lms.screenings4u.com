@@ -97,15 +97,15 @@ function renderShell() {
   $("trainingPortalApp").innerHTML = `
     <div class="app">
       <aside class="side">
-        <div class="brand"><img src="images/training-logo.png" alt="screenings4u Learning Center"></div>
-        <nav class="nav"><div class="nav-title">SCREENINGS4U LEARNING CENTER</div>${links}</nav>
+        <div class="brand"><img src="images/training-logo.png" alt="Workforce Training by screenings4u"></div>
+        <nav class="nav"><div class="nav-title">Workforce Training by screenings4u</div>${links}</nav>
         <div class="side-foot"><div>Portal</div><strong>lms.screenings4u.com</strong></div>
       </aside>
       <main class="main">
         <header class="top">
           <div class="top-left">
             <button class="menu" id="menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNav"><span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span></button>
-            <div class="top-context"><span class="top-eyebrow">SCREENINGS4U LEARNING CENTER</span><span class="crumb">Live Training</span></div>
+            <div class="top-context"><span class="top-eyebrow">Workforce Training by screenings4u</span><span class="crumb">Live Training</span></div>
           </div>
           <div class="top-right">
             <div class="portal-clock"><span id="portalClockDate" class="portal-clock-date"></span><strong id="portalClockTime" class="portal-clock-time"></strong></div>
@@ -113,11 +113,11 @@ function renderShell() {
             <span class="pill">LEARNER</span><a class="top-support" href="lms-support.html">Support</a><button class="signout" id="logout" type="button">Sign out</button>
           </div>
         </header>
-        <section class="mobile-nav" id="mobileNav" aria-hidden="true"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>SCREENINGS4U LEARNING CENTER</strong></div><span class="mobile-nav-current">Live Training</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
+        <section class="mobile-nav" id="mobileNav" aria-hidden="true"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>Workforce Training by screenings4u</strong></div><span class="mobile-nav-current">Live Training</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
         <div class="content live-page-content">
           <section class="live-hero">
             <div class="live-hero-copy">
-              <span class="live-hero-kicker">SCREENINGS4U LEARNING CENTER</span>
+              <span class="live-hero-kicker">Workforce Training by screenings4u</span>
               <h1>Live Training</h1>
               <p>Join and manage your scheduled instructor-led training session.</p>
               <div class="live-hero-features">
@@ -128,7 +128,7 @@ function renderShell() {
             </div>
             <div class="live-hero-visual" aria-hidden="true">
               <div class="hero-orbit one"></div><div class="hero-orbit two"></div>
-              <div class="hero-screen"><div class="hero-screen-cap">${icon("cap")}</div><strong>screenings4u | Learning Center</strong></div>
+              <div class="hero-screen"><div class="hero-screen-cap">${icon("cap")}</div><strong>screenings4u | Workforce Training by screenings4u</strong></div>
             </div>
           </section>
           <section id="liveContent" class="live-content"><div class="live-loading"><span></span><strong>Loading live training…</strong></div></section>

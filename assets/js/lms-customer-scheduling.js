@@ -1587,7 +1587,7 @@
 
 
 /* SOURCE: assets/js/lms-global-support-bar.js?v=20260915-1 */
-/* Screenings4u Learning Center — shared support bar
+/* Workforce Training by screenings4u — shared support bar
    Adds the same full-width support bar to every LMS page except the course player. */
 (function () {
   'use strict';

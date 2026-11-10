@@ -1464,7 +1464,7 @@
 
 /* SOURCE: assets/js/lms.js */
 /* ============================================================
-   SCREENINGS4U LEARNING CENTER
+   Workforce Training by screenings4u
    SHARED LMS APPLICATION JAVASCRIPT
    ============================================================ */
 
@@ -1815,7 +1815,7 @@ async function init(){
  render();
 }
 function render(){
- document.title=(course.title||"Course")+" | Screenings4u Learning Center";
+ document.title=(course.title||"Course")+" | Workforce Training by screenings4u";
  set("[data-course-breadcrumb]",course.title);
  set("[data-course-title]",course.title);
  set("[data-course-category]",course.metadata?.category||"Training");

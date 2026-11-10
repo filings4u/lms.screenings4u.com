@@ -1,4 +1,4 @@
-/* screenings4u Learning Center — Quiz Runtime */
+/* Workforce Training by screenings4u — Quiz Runtime */
 (() => {
   "use strict";
 
@@ -99,7 +99,7 @@
     meta = data.assessment || data.quiz || {};
     questions = Array.isArray(data.questions) ? data.questions : [];
 
-    if (!attemptId) throw new Error("The Learning Center could not create an assessment attempt.");
+    if (!attemptId) throw new Error("The Workforce Training by screenings4u could not create an assessment attempt.");
     if (!questions.length) throw new Error("This assessment does not have any published questions.");
 
     setup();
@@ -114,7 +114,7 @@
       ? "Complete the final assessment to demonstrate your understanding of the course."
       : "Complete this knowledge check before continuing to the next lesson.");
 
-    document.title = `${title} | screenings4u Learning Center`;
+    document.title = `${title} | Workforce Training by screenings4u`;
     setText("topbarTitle", finalAssessment ? "Final Assessment" : "Knowledge Check");
     setText("quizType", finalAssessment ? "FINAL COMPREHENSIVE ASSESSMENT" : "MODULE KNOWLEDGE CHECK");
     setText("quizTitle", title);
@@ -294,11 +294,11 @@
     const totalCount = rows.length || Number(review.question_count || 0);
     const title = review.quiz?.title || "Knowledge Check";
 
-    document.title = `${title} | screenings4u Learning Center`;
+    document.title = `${title} | Workforce Training by screenings4u`;
     setText("topbarTitle", "Knowledge Check");
     setText("quizType", "MODULE KNOWLEDGE CHECK");
     setText("quizTitle", title);
-    setText("quizDescription", passed ? "Your completed result is saved in the Learning Center." : "Your previous completed attempt is saved.");
+    setText("quizDescription", passed ? "Your completed result is saved in the Workforce Training by screenings4u." : "Your previous completed attempt is saved.");
     setText("sideTitle", title);
     setText("sideDescription", "Your most recent completed attempt is shown here.");
     setText("questionCount", totalCount || "—");

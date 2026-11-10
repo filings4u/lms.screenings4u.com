@@ -81,15 +81,15 @@
     document.getElementById("trainingPortalApp").innerHTML = `
       <div class="app">
         <aside class="side" id="side">
-          <div class="brand"><img src="images/training-logo.png" alt="screenings4u Learning Center"></div>
-          <nav class="nav"><div class="nav-title">SCREENINGS4U LEARNING CENTER</div>${links}</nav>
+          <div class="brand"><img src="images/training-logo.png" alt="Workforce Training by screenings4u"></div>
+          <nav class="nav"><div class="nav-title">Workforce Training by screenings4u</div>${links}</nav>
           <div class="side-foot"><div style="font-size:.5625rem;color:#9fb3c7">Portal</div><div style="font-size:.6875rem;font-weight:800;color:#fff;margin-top:3px">lms.screenings4u.com</div></div>
         </aside>
         <main class="main">
           <header class="top">
             <div class="top-left">
               <button class="menu" id="menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNav"><span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span></button>
-              <div class="top-context"><span class="top-eyebrow">SCREENINGS4U LEARNING CENTER</span><span class="crumb">My Appointments</span></div>
+              <div class="top-context"><span class="top-eyebrow">Workforce Training by screenings4u</span><span class="crumb">My Appointments</span></div>
             </div>
             <div class="top-right">
               <div class="top-utility-group top-time-group"><div class="portal-clock" aria-label="Current date and time"><span id="portalClockDate" class="portal-clock-date"></span><strong id="portalClockTime" class="portal-clock-time"></strong></div></div>
@@ -97,9 +97,9 @@
               <div class="top-utility-group top-action-group"><span class="pill">LEARNER</span><a class="top-support" href="lms-support.html">Support</a><button class="signout" id="logout" type="button">Sign out</button></div>
             </div>
           </header>
-          <section class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Portal navigation"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>SCREENINGS4U LEARNING CENTER</strong></div><span class="mobile-nav-current">Appointments</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
+          <section class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Portal navigation"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>Workforce Training by screenings4u</strong></div><span class="mobile-nav-current">Appointments</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
           <div class="content">
-            <section class="hero"><span class="hero-kicker">SCREENINGS4U LEARNING CENTER</span><h1>My Appointments</h1><p>View and manage your scheduled live training sessions.</p><div class="hero-actions"><a class="btn primary" href="lms-schedule-appointment.html">Schedule Appointment</a><a class="btn secondary" href="lms-live-training.html">Live Training</a></div></section>
+            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>My Appointments</h1><p>View and manage your scheduled live training sessions.</p><div class="hero-actions"><a class="btn primary" href="lms-schedule-appointment.html">Schedule Appointment</a><a class="btn secondary" href="lms-live-training.html">Live Training</a></div></section>
             <section class="section" id="content"><div class="loading-msg">Loading appointments…</div></section>
           </div>
         </main>
@@ -215,7 +215,7 @@
     const title = displayTitle(a);
     const host = a.host_name ? `<span>Instructor: ${esc(a.host_name)}</span>` : "";
     const tracking = a.tracking_number ? `<span>Tracking: ${esc(a.tracking_number)}</span>` : "";
-    const provider = a.meeting_provider === "microsoft_teams" ? `<span class="appointment-provider">Learning Center Live Training</span>` : "";
+    const provider = a.meeting_provider === "microsoft_teams" ? `<span class="appointment-provider">Workforce Training by screenings4u Live Training</span>` : "";
     const status = statusLabel(a);
     const classes = `appointment-card${upcoming ? "" : " is-past"}${norm(a.status) === "cancelled" ? " is-cancelled" : ""}`;
     const rescheduleUrl = `lms-reschedule-appointment.html?appointment=${encodeURIComponent(a.id)}`;
@@ -224,7 +224,7 @@
       <div class="appointment-body">
         <div class="appointment-top"><div>${provider}${title ? `<h3 class="appointment-title">${esc(title)}</h3>` : ""}</div>${status ? `<span class="badge ${statusClass(status)}">${esc(status)}</span>` : ""}</div>
         <div class="appointment-meta"><span>${esc(fmtDate(a.start_at))}</span><span>${esc(fmtTime(a.start_at))}${a.end_at ? ` – ${esc(fmtTime(a.end_at))}` : ""}</span>${host}${tracking}</div>
-        ${upcoming && !joinWindow && hasLiveMeeting ? `<span class="appointment-note">Your live training room opens inside the Learning Center 30 minutes before the scheduled start time.</span>` : ""}
+        ${upcoming && !joinWindow && hasLiveMeeting ? `<span class="appointment-note">Your live training room opens inside the Workforce Training by screenings4u 30 minutes before the scheduled start time.</span>` : ""}
       </div>
       <div class="appointment-actions">
         ${hasLiveMeeting ? `<a class="btn ${joinWindow ? "primary" : "ghost"}" href="lms-live-training.html?appointment=${encodeURIComponent(a.id)}">${joinWindow ? "Enter Live Training" : "Live Training Details"}</a>` : ""}

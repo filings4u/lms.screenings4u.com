@@ -1969,7 +1969,7 @@ a {
 }
 
 
-/* Learning Center brand lockup — logo | Learning Center */
+/* Workforce Training by screenings4u brand lockup — logo | Workforce Training by screenings4u */
 .lms-brand {
   min-height: 92px;
   flex-direction: row;
@@ -2018,7 +2018,7 @@ a {
 
 
 /* SOURCE: assets/css/lms-refinement.css */
-/* screenings4u Learning Center — shared 2026 refinement */
+/* Workforce Training by screenings4u — shared 2026 refinement */
 :root{
   --lms-page-max:1240px;
   --lms-space-1:8px;
@@ -2583,7 +2583,7 @@ body.lms-dashboard-home .lms-content{width:min(1360px,calc(100% - 56px))!importa
 
 
 /* SOURCE: assets/css/lms-progress-redesign-2026.css?v=20260915-2 */
-/* screenings4u Learning Center — Progress redesign 2026 */
+/* Workforce Training by screenings4u — Progress redesign 2026 */
 :root{
   --progress-navy:#24467f;
   --progress-navy-deep:#17335f;

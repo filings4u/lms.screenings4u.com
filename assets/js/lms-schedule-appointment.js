@@ -1464,7 +1464,7 @@
 
 /* SOURCE: assets/js/lms.js */
 /* ============================================================
-   SCREENINGS4U LEARNING CENTER
+   Workforce Training by screenings4u
    SHARED LMS APPLICATION JAVASCRIPT
    ============================================================ */
 

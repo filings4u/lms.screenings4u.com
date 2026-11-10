@@ -63,15 +63,15 @@
     document.getElementById("trainingPortalApp").innerHTML = `
       <div class="app">
         <aside class="side" id="side">
-          <div class="brand"><img src="images/training-logo.png" alt="screenings4u Learning Center"></div>
-          <nav class="nav"><div class="nav-title">SCREENINGS4U LEARNING CENTER</div>${links}</nav>
+          <div class="brand"><img src="images/training-logo.png" alt="Workforce Training by screenings4u"></div>
+          <nav class="nav"><div class="nav-title">Workforce Training by screenings4u</div>${links}</nav>
           <div class="side-foot"><div style="font-size:.5625rem;color:#9fb3c7">Portal</div><div style="font-size:.6875rem;font-weight:800;color:#fff;margin-top:3px">lms.screenings4u.com</div></div>
         </aside>
         <main class="main">
           <header class="top">
             <div class="top-left">
               <button class="menu" id="menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNav"><span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span></button>
-              <div class="top-context"><span class="top-eyebrow">SCREENINGS4U LEARNING CENTER</span><span class="crumb">Course Library</span></div>
+              <div class="top-context"><span class="top-eyebrow">Workforce Training by screenings4u</span><span class="crumb">Course Library</span></div>
             </div>
             <div class="top-right">
               <div class="top-utility-group top-time-group"><div class="portal-clock" aria-label="Current date and time"><span id="portalClockDate" class="portal-clock-date"></span><strong id="portalClockTime" class="portal-clock-time"></strong></div></div>
@@ -79,9 +79,9 @@
               <div class="top-utility-group top-action-group"><span class="pill">LEARNER</span><a class="top-support" href="lms-support.html">Support</a><button class="signout" id="logout" type="button">Sign out</button></div>
             </div>
           </header>
-          <section class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Portal navigation"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>SCREENINGS4U LEARNING CENTER</strong></div><span class="mobile-nav-current">Course Library</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
+          <section class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Portal navigation"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>Workforce Training by screenings4u</strong></div><span class="mobile-nav-current">Course Library</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
           <div class="content">
-            <section class="hero"><span class="hero-kicker">SCREENINGS4U LEARNING CENTER</span><h1>Course Library</h1><p>Browse published Learning Center courses and open the training assigned to your account.</p></section>
+            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>Course Library</h1><p>Browse published Workforce Training by screenings4u courses and open the training assigned to your account.</p></section>
             <section class="section" id="content"></section>
           </div>
         </main>
@@ -234,7 +234,7 @@
 
     document.getElementById("content").innerHTML = `
       <div class="metrics">
-        <article class="metric"><small>Published Courses</small><strong>${state.courses.length}</strong><span>Learning Center catalog</span></article>
+        <article class="metric"><small>Published Courses</small><strong>${state.courses.length}</strong><span>Workforce Training by screenings4u catalog</span></article>
         <article class="metric"><small>Assigned to You</small><strong>${enrolledCount}</strong><span>Current enrollments</span></article>
         <article class="metric"><small>Completed</small><strong>${completedCount}</strong><span>Finished training</span></article>
         <article class="metric"><small>Available</small><strong>${Math.max(0, state.courses.length - enrolledCount)}</strong><span>Not currently assigned</span></article>
@@ -242,7 +242,7 @@
       ${renderExtensionOption()}
       <div class="section">
         <div class="panel">
-          <div class="panel-head"><div><h2>Course Library</h2><p>Published screenings4u Learning Center courses.</p></div><span class="course-library-count">${filtered.length} course${filtered.length === 1 ? "" : "s"}</span></div>
+          <div class="panel-head"><div><h2>Course Library</h2><p>Published Workforce Training by screenings4u courses.</p></div><span class="course-library-count">${filtered.length} course${filtered.length === 1 ? "" : "s"}</span></div>
           <div class="course-library-toolbar">
             <div class="field"><label for="courseSearch">Search courses</label><input id="courseSearch" type="search" value="${esc(state.query)}" autocomplete="off"></div>
             <div class="field"><label for="courseFilter">Show</label><select id="courseFilter"><option value="all"${state.filter === "all" ? " selected" : ""}>All published courses</option><option value="enrolled"${state.filter === "enrolled" ? " selected" : ""}>Assigned to me</option><option value="available"${state.filter === "available" ? " selected" : ""}>Available courses</option><option value="completed"${state.filter === "completed" ? " selected" : ""}>Completed courses</option></select></div>

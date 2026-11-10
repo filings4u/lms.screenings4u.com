@@ -20,7 +20,7 @@
     if (active) close(false);
 
     const {
-      title = "Screenings4u Learning Center",
+      title = "Workforce Training by screenings4u",
       message = "",
       type = "info",
       confirmText = "OK",
@@ -37,10 +37,10 @@
         <div class="lms-brand-dialog__backdrop" data-dialog-cancel></div>
         <section class="lms-brand-dialog__panel" aria-labelledby="lmsDialogTitle">
           <div class="lms-brand-dialog__brand">
-            <img src="images/training-logo.png" alt="Screenings4u Learning Center">
+            <img src="images/training-logo.png" alt="Workforce Training by screenings4u">
           </div>
           <div class="lms-brand-dialog__body">
-            <div class="lms-brand-dialog__eyebrow">SCREENINGS4U LEARNING CENTER</div>
+            <div class="lms-brand-dialog__eyebrow">Workforce Training by screenings4u</div>
             <h2 id="lmsDialogTitle">${esc(title)}</h2>
             <p>${esc(message)}</p>
             <div class="lms-brand-dialog__actions">
@@ -70,7 +70,7 @@
   window.LMSDialog = {
     alert(message, options = {}) {
       return open({
-        title: options.title || "Learning Center",
+        title: options.title || "Workforce Training by screenings4u",
         message,
         type: options.type || "info",
         confirmText: options.confirmText || "OK",
