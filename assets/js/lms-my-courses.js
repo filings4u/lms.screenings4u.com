@@ -227,7 +227,7 @@
       (status==="Access Expired"?'<small>Previous course record; progress is preserved.</small>':"")+
       '</div></div></td>'+
       '<td data-label="Progress"><div class="wt-myc-table-progress"><strong>'+progress+'%</strong><span class="wt-myc-track"><span style="width:'+progress+'%"></span></span></div></td>'+
-      '<td data-label="Status"><span class="wt-myc-badge wt-myc-badge-'+status.toLowerCase().replace(/\\s+/g,"-")+'">'+esc(status)+'</span></td>'+
+      '<td data-label="Status"><span class="wt-myc-badge wt-myc-badge-'+status.toLowerCase().replace(/\s+/g,"-")+'">'+esc(status)+'</span></td>'+
       '<td data-label="Enrolled">'+(row.enrolled_at?esc(fmtDate(row.enrolled_at)):"—")+'</td>'+
       '<td data-label="Access Through">'+(row.expires_at?esc(fmtDate(row.expires_at)):"—")+'</td>'+
       '<td data-label="Last Activity">'+(row.last_activity_at?esc(fmtDate(row.last_activity_at)):"—")+'</td>'+
