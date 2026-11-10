@@ -37,7 +37,7 @@
   ];
 
   let portalFontSize = Number(localStorage.getItem(FONT_KEY) || FONT_DEFAULT);
-  let state = { courses: [], enrollments: [], query: "", filter: "all" };
+  let state = { courses: [], enrollments: [], query: "", filter: "all", category: "all" };
 
   const esc = value => String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -81,7 +81,7 @@
           </header>
           <section class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Portal navigation"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>Workforce Training by screenings4u</strong></div><span class="mobile-nav-current">Course Library</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
           <div class="content">
-            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>Course Library</h1><p>Browse published Workforce Training by screenings4u courses and open the training assigned to your account.</p></section>
+            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>Course Library</h1><p>Browse all Workforce Training courses, continue assigned courses, and discover available training.</p></section>
             <section class="section" id="content"></section>
           </div>
         </main>
@@ -197,69 +197,99 @@
     });
   }
 
+
+  function imageFor(course){
+    const s=String((course.slug||"")+" "+(course.title||"")).toLowerCase();
+    if(s.includes("hazmat")||s.includes("hazardous"))return "images/hazmat-hero.png";
+    if(s.includes("der")||s.includes("designated employer"))return "images/der-hero.png";
+    if(s.includes("supervisor")||s.includes("suspicion"))return "images/supervisor-hero.png";
+    if(s.includes("employee")||s.includes("alcohol"))return "images/employee-hero.png";
+    if(s.includes("collector")||s.includes("specimen"))return "images/collector-hero.png";
+    return "images/group-hero.png";
+  }
+
+  function categoryFor(course){
+    const s=String((course.slug||"")+" "+(course.title||"")).toLowerCase();
+    if(s.includes("hazmat")||s.includes("hazardous"))return "HazMat";
+    if(s.includes("der")||s.includes("designated employer"))return "DER";
+    if(s.includes("supervisor")||s.includes("suspicion"))return "Supervisor";
+    if(s.includes("employee")||s.includes("alcohol"))return "Employee";
+    if(s.includes("collector")||s.includes("specimen"))return "Collector";
+    return "Other Training";
+  }
+
   function renderLibrary(){
-    const q = state.query.trim().toLowerCase();
-    const filtered = state.courses.filter(course => {
-      const status = courseStatus(course);
-      if (state.filter === "enrolled" && status === "Available") return false;
-      if (state.filter === "available" && status !== "Available") return false;
-      if (state.filter === "completed" && status !== "Completed") return false;
-      if (!q) return true;
-      return `${course.title || ""} ${course.short_description || ""}`.toLowerCase().includes(q);
-    });
-
-    const cards = filtered.map(course => {
-      const enrollment = enrollmentFor(course.id);
-      const status = courseStatus(course);
-      const progress = enrollment ? pct(enrollment.progress_percent) : 0;
-      const action = actionFor(course);
-      return `<article class="course-library-card">
-        <div class="course-library-card-top">
-          <span class="badge ${badgeClass(status)}">${esc(status)}</span>
-          ${course.pace ? `<span class="course-library-count">${esc(String(course.pace).replaceAll("_", " "))}</span>` : ""}
-        </div>
-        <h3>${esc(course.title)}</h3>
-        ${course.short_description ? `<p>${esc(course.short_description)}</p>` : ""}
-        <div class="course-library-meta">
-          ${course.certificate_enabled ? `<span class="badge">Certificate</span>` : ""}
-          ${enrollment?.expires_at ? `<span class="badge">${status === "Access Expired" ? "Access ended" : "Access through"} ${esc(new Intl.DateTimeFormat("en-US", {month:"short", day:"numeric", year:"numeric"}).format(new Date(enrollment.expires_at)))}</span>` : ""}
-        </div>
-        ${enrollment ? `<div class="course-library-progress"><div class="course-library-progress-head"><span>Progress</span><span>${progress}%</span></div><div class="course-library-progress-track"><span style="width:${progress}%"></span></div></div>` : ""}
-        <div class="course-library-actions"><a class="btn primary" href="${action.href}">${esc(action.label)}</a></div>
-      </article>`;
+    const enrolledCount=state.courses.filter(course=>courseStatus(course)!=="Available").length;
+    const completedCount=state.courses.filter(course=>courseStatus(course)==="Completed").length;
+    const progressRows=state.enrollments.filter(row=>state.courses.some(course=>course.id===row.course_id));
+    const averageProgress=progressRows.length?Math.round(progressRows.reduce((s,row)=>s+pct(row.progress_percent),0)/progressRows.length):0;
+    const stats=[
+      ["Total Courses",state.courses.length,"Published training","▤"],
+      ["Enrolled Courses",enrolledCount,"Assigned to you","✦"],
+      ["Completed",completedCount,"Finished training","✓"],
+      ["Average Progress",averageProgress+"%","Across enrollments","▥"]
+    ];
+    const categories=[...new Set(state.courses.map(categoryFor))].sort();
+    const cards=state.courses.map(course=>{
+      const enrollment=enrollmentFor(course.id);
+      const status=courseStatus(course);
+      const progress=enrollment?pct(enrollment.progress_percent):0;
+      const action=actionFor(course);
+      const badge=status==="In Progress"?"in-progress":status==="Access Expired"?"expired":status==="Completed"?"complete":status==="Assigned"?"assigned":"available";
+      const date=enrollment?.last_activity_at?new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric"}).format(new Date(enrollment.last_activity_at)):"";
+      const expiry=enrollment?.expires_at?new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric"}).format(new Date(enrollment.expires_at)):"";
+      const searchable=(course.title+" "+(course.short_description||"")+" "+(course.slug||"")).toLowerCase();
+      return '<article class="wt-lib-course" data-category="'+esc(categoryFor(course))+'" data-status="'+esc(status)+'" data-search="'+esc(searchable)+'">'+
+        '<img class="wt-lib-photo" src="'+imageFor(course)+'" alt="" loading="lazy">'+
+        '<div class="wt-lib-course-content"><div class="wt-lib-card-top"><span class="wt-lib-status wt-lib-'+badge+'">'+esc(status)+'</span>'+
+        (course.pace?'<span class="wt-lib-pace">'+esc(String(course.pace).replaceAll("_"," "))+'</span>':"")+'</div>'+
+        '<h3>'+esc(course.title)+'</h3>'+
+        '<p class="wt-lib-description">'+esc(course.short_description||"Explore the course details and training requirements.")+'</p>'+
+        '<div class="wt-lib-course-bottom">'+
+        (enrollment?'<div class="wt-lib-progress-label"><strong>'+progress+'% Complete</strong></div><div class="wt-lib-track"><span style="width:'+progress+'%"></span></div>':'<div class="wt-lib-progress-label"><strong>Ready to enroll</strong></div>')+
+        '<div class="wt-lib-meta">'+(status==="Access Expired"&&expiry?'Access ended: '+esc(expiry):date?'Last activity: '+esc(date):course.certificate_enabled?'Certificate available':'View course details')+'</div>'+
+        '<a class="wt-lib-button" href="'+esc(action.href)+'">'+esc(action.label)+' →</a></div></div></article>';
     }).join("");
-
-    const enrolledCount = state.courses.filter(course => courseStatus(course) !== "Available").length;
-    const completedCount = state.courses.filter(course => courseStatus(course) === "Completed").length;
-
-    document.getElementById("content").innerHTML = `
-      <div class="metrics">
-        <article class="metric"><small>Published Courses</small><strong>${state.courses.length}</strong><span>Workforce Training by screenings4u catalog</span></article>
-        <article class="metric"><small>Assigned to You</small><strong>${enrolledCount}</strong><span>Current enrollments</span></article>
-        <article class="metric"><small>Completed</small><strong>${completedCount}</strong><span>Finished training</span></article>
-        <article class="metric"><small>Available</small><strong>${Math.max(0, state.courses.length - enrolledCount)}</strong><span>Not currently assigned</span></article>
-      </div>
-      ${renderExtensionOption()}
-      <div class="section">
-        <div class="panel">
-          <div class="panel-head"><div><h2>Course Library</h2><p>Published Workforce Training by screenings4u courses.</p></div><span class="course-library-count">${filtered.length} course${filtered.length === 1 ? "" : "s"}</span></div>
-          <div class="course-library-toolbar">
-            <div class="field"><label for="courseSearch">Search courses</label><input id="courseSearch" type="search" value="${esc(state.query)}" autocomplete="off"></div>
-            <div class="field"><label for="courseFilter">Show</label><select id="courseFilter"><option value="all"${state.filter === "all" ? " selected" : ""}>All published courses</option><option value="enrolled"${state.filter === "enrolled" ? " selected" : ""}>Assigned to me</option><option value="available"${state.filter === "available" ? " selected" : ""}>Available courses</option><option value="completed"${state.filter === "completed" ? " selected" : ""}>Completed courses</option></select></div>
-          </div>
-          ${cards ? `<div class="course-library-grid">${cards}</div>` : `<div class="course-library-panel-empty">No courses match the current search or filter.</div>`}
-        </div>
-      </div>
-      <div class="section"><div class="panel course-group-panel">
-        <div class="panel-head"><div><h2>Group Training</h2><p>Purchase multiple learner seats for DOT collector, DER, supervisor, employee, and HazMat courses.</p></div><span class="badge">For employers</span></div>
-        <div class="course-group-body"><p>Group Training is a purchasing and enrollment option for existing courses, not an additional course in the library.</p><a class="btn primary" href="https://training.screenings4u.com/group-training.html">Explore Group Training →</a></div>
-      </div></div>`;
-
+    const content=document.getElementById("content");
+    content.classList.add("wt-library");
+    content.innerHTML=
+      '<section class="wt-lib-stats">'+stats.map(([label,value,sub,icon])=>
+        '<article class="wt-lib-stat"><span class="wt-lib-stat-icon" aria-hidden="true">'+icon+'</span><div><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong><span>'+esc(sub)+'</span></div></article>').join("")+'</section>'+
+      '<section class="wt-lib-toolbar" aria-label="Find courses">'+
+      '<label class="wt-lib-search"><span class="sr-only">Search courses</span><input id="courseSearch" type="search" placeholder="Search courses by title, topic, or keyword…" autocomplete="off" value="'+esc(state.query)+'"></label>'+
+      '<label class="wt-lib-select"><span>Category</span><select id="courseCategory"><option value="all">All Categories</option>'+categories.map(x=>'<option value="'+esc(x)+'"'+(x===state.category?' selected':'')+'>'+esc(x)+'</option>').join("")+'</select></label>'+
+      '<label class="wt-lib-select"><span>Status</span><select id="courseFilter">'+
+      '<option value="all">All Statuses</option><option value="enrolled">Assigned to Me</option><option value="available">Available</option><option value="completed">Completed</option><option value="progress">In Progress</option><option value="expired">Access Expired</option></select></label>'+
+      '</section>'+
+      '<div class="wt-lib-results"><span id="courseCount" aria-live="polite"></span></div>'+
+      '<section class="wt-lib-grid" id="courseGrid" aria-label="Published course catalog">'+cards+'</section>'+
+      '<p class="wt-lib-empty" id="courseEmpty" hidden>No courses match the selected search or filters.</p>'+
+      '<section class="wt-lib-bottom"><div class="wt-lib-group"><span aria-hidden="true" class="wt-lib-group-icon">♧</span><div><h2>Group Training</h2><p>Purchase multiple learner seats for eligible DOT Collector, DER, Supervisor, Employee and HazMat training.</p></div><a href="https://training.screenings4u.com/group-training.html" class="wt-lib-button">Explore Group Training →</a></div></section>'+
+      renderExtensionOption();
     bindExtensionOption();
-    const search = document.getElementById("courseSearch");
-    const filter = document.getElementById("courseFilter");
-    search?.addEventListener("input", event => { state.query = event.target.value; renderLibrary(); document.getElementById("courseSearch")?.focus(); });
-    filter?.addEventListener("change", event => { state.filter = event.target.value; renderLibrary(); });
+    const search=document.getElementById("courseSearch"),status=document.getElementById("courseFilter"),category=document.getElementById("courseCategory");
+    status.value=state.filter;
+    function applyFilters(){
+      state.query=search.value;state.filter=status.value;state.category=category.value;
+      const q=state.query.trim().toLowerCase();let count=0;
+      content.querySelectorAll(".wt-lib-course").forEach(card=>{
+        const label=card.dataset.status;
+        const matchStatus=state.filter==="all"||
+          (state.filter==="enrolled"&&label!=="Available")||
+          (state.filter==="available"&&label==="Available")||
+          (state.filter==="completed"&&label==="Completed")||
+          (state.filter==="progress"&&label==="In Progress")||
+          (state.filter==="expired"&&label==="Access Expired");
+        const visible=matchStatus&&(state.category==="all"||card.dataset.category===state.category)&&(!q||card.dataset.search.includes(q));
+        card.hidden=!visible;if(visible)count++;
+      });
+      document.getElementById("courseCount").textContent=count+" of "+state.courses.length+" published courses";
+      document.getElementById("courseEmpty").hidden=count!==0;
+    }
+    search.addEventListener("input",applyFilters);
+    status.addEventListener("change",applyFilters);
+    category.addEventListener("change",applyFilters);
+    applyFilters();
   }
 
   async function loadData(userId){
