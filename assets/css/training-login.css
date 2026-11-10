@@ -155,3 +155,134 @@ body.wt-training-login :is(button,input,a):focus-visible{outline:3px solid #ffa7
  body.wt-training-login .login-button{font-size:14px}
 }
 @media(prefers-reduced-motion:reduce){body.wt-training-login .login-button{transition:none!important}}
+
+
+/* Approved mockup corrections: desktop composition and no marketing/legal footer.
+   The login form and its auth handlers remain unchanged. */
+html,body.wt-training-login{margin:0!important;padding:0!important}
+body.wt-training-login{min-height:100svh!important;overflow-x:hidden!important}
+body.wt-training-login main.wt-login-layout{
+  width:100%!important;min-height:100svh!important;
+  grid-template-columns:minmax(0,52%) minmax(0,48%)!important;
+  overflow:clip!important
+}
+body.wt-training-login .login-brand{
+  min-height:100svh!important;
+  padding:35px clamp(34px,7.2vw,118px) 75px!important;
+  background:radial-gradient(circle at 96% 45%,#0b437d 0%,#062b5a 42%,#001533 82%)!important;
+}
+body.wt-training-login .brand-content{
+  margin-top:0!important;
+  width:min(640px,100%)!important;
+  padding-bottom:35px!important;
+}
+body.wt-training-login .brand-home{margin:0 0 clamp(27px,4.7vh,48px)!important;max-width:100%!important}
+body.wt-training-login .brand-logo{
+  width:clamp(225px,21.5vw,340px)!important;
+  max-width:100%!important;max-height:113px!important;
+  object-fit:contain!important;object-position:left center!important;
+}
+body.wt-training-login .brand-kicker{
+  font-size:11px!important;letter-spacing:1.7px!important;
+  margin:0 0 17px!important;color:#ffa700!important
+}
+body.wt-training-login .brand-content h1{
+  font-size:clamp(40px,4.15vw,67px)!important;
+  letter-spacing:-2.6px!important;line-height:1.045!important;
+  margin:0 0 22px!important;max-width:620px!important
+}
+body.wt-training-login .brand-content>p{
+  font-size:clamp(14px,1.05vw,17px)!important;
+  line-height:1.64!important;max-width:585px!important
+}
+body.wt-training-login .brand-points{
+  display:grid!important;grid-template-columns:repeat(4,max-content)!important;
+  gap:7px!important;margin:25px 0 0!important;flex-wrap:nowrap!important;
+}
+body.wt-training-login .brand-points li{
+  padding:8px 9px!important;gap:6px!important;
+  font-size:clamp(9px,.72vw,11px)!important;white-space:nowrap!important;
+}
+body.wt-training-login .brand-point-icon{
+  width:14px!important;height:17px!important;font-size:13px!important
+}
+body.wt-training-login .brand-scene{
+  height:clamp(165px,27vh,265px)!important;
+  opacity:.79!important;filter:saturate(.70)!important;
+  background:linear-gradient(0deg,rgba(0,21,51,.03),rgba(0,21,51,.17) 46%,#001533 100%),url("../images/group-hero.png") center 60%/cover no-repeat!important;
+  mask-image:linear-gradient(to top,#000 0%,#000 57%,transparent 100%)!important;
+}
+body.wt-training-login .login-panel{
+  min-height:100svh!important;
+  padding:24px clamp(23px,4.8vw,80px)!important;
+  background:radial-gradient(circle at 87% 30%,#f8fbff,#edf3fa 83%)!important;
+}
+body.wt-training-login .login-card{
+  width:min(560px,100%)!important;max-width:560px!important;
+  padding:24px clamp(22px,2.35vw,36px) 20px!important;
+  border-radius:19px!important;
+  box-shadow:0 22px 45px rgba(0,21,51,.11)!important;
+}
+body.wt-training-login .login-card-header{margin:0 0 17px!important}
+body.wt-training-login .portal-label{
+  margin:0 0 12px!important;font-size:10px!important;letter-spacing:1.15px!important
+}
+body.wt-training-login .login-card-header h2{
+  font-size:clamp(32px,2.7vw,42px)!important;margin:0 0 6px!important;
+  letter-spacing:-1.45px!important
+}
+body.wt-training-login .login-card-header>p{font-size:14px!important;line-height:1.5!important}
+body.wt-training-login .training-login-help{
+  padding:14px 16px!important;margin:0 0 19px!important;gap:11px!important
+}
+body.wt-training-login .help-item{grid-template-columns:25px minmax(0,1fr)!important;gap:10px!important}
+body.wt-training-login .help-icon,.wt-training-login .help-icon svg{width:23px!important;height:23px!important}
+body.wt-training-login .help-item p{font-size:12px!important;line-height:1.46!important}
+body.wt-training-login .help-item p strong{font-size:12px!important;margin-bottom:2px!important}
+body.wt-training-login .field{margin-bottom:13px!important}
+body.wt-training-login .field label{margin:0 0 7px!important}
+body.wt-training-login .field input{height:48px!important}
+body.wt-training-login .password-toggle{top:4px!important}
+body.wt-training-login .login-options{margin:0 0 15px!important}
+body.wt-training-login .login-button{min-height:50px!important}
+body.wt-training-login .security-note{margin:15px 0 0!important;padding:11px 13px!important;font-size:11px!important}
+body.wt-training-login .home-link{margin-top:12px!important;font-size:11px!important}
+body.wt-training-login #wt-lms-legal{display:none!important}
+@media(min-width:851px) and (max-width:1350px){
+  body.wt-training-login .login-brand{padding-left:38px!important;padding-right:30px!important}
+  body.wt-training-login .brand-points{grid-template-columns:repeat(2,max-content)!important}
+  body.wt-training-login .brand-content h1{font-size:clamp(37px,4vw,53px)!important}
+  body.wt-training-login .login-panel{padding-inline:28px!important}
+}
+@media(max-width:850px){
+  body.wt-training-login main.wt-login-layout{grid-template-columns:minmax(0,1fr)!important;overflow:visible!important;min-height:100svh!important}
+  body.wt-training-login .login-brand{min-height:0!important;padding:28px 24px 40px!important}
+  body.wt-training-login .brand-content{margin:0!important;padding-bottom:0!important}
+  body.wt-training-login .brand-home{margin-bottom:20px!important}
+  body.wt-training-login .brand-logo{width:250px!important;max-height:86px!important}
+  body.wt-training-login .brand-content h1{font-size:clamp(32px,6vw,44px)!important;letter-spacing:-1.25px!important}
+  body.wt-training-login .brand-points{grid-template-columns:repeat(4,max-content)!important;gap:5px!important;margin-top:19px!important}
+  body.wt-training-login .brand-scene{opacity:.16!important;height:150px!important}
+  body.wt-training-login .login-panel{min-height:0!important;padding:25px 16px 38px!important}
+  body.wt-training-login .login-card{max-width:650px!important;padding:25px!important}
+}
+@media(max-width:580px){
+  body.wt-training-login .login-brand{padding:25px 18px 32px!important}
+  body.wt-training-login .brand-content>p{font-size:13px!important}
+  body.wt-training-login .brand-content h1{font-size:34px!important}
+  body.wt-training-login .brand-points{grid-template-columns:repeat(2,max-content)!important;gap:7px!important}
+  body.wt-training-login .brand-points li{font-size:11px!important}
+  body.wt-training-login .login-card{padding:23px 18px!important}
+  body.wt-training-login .login-panel{padding:16px 12px 30px!important}
+}
+@media(max-height:750px) and (min-width:851px){
+  body.wt-training-login .login-panel{align-items:flex-start!important;padding-block:13px!important}
+  body.wt-training-login .login-card{padding-block:17px!important}
+  body.wt-training-login .brand-home{margin-bottom:24px!important}
+  body.wt-training-login .brand-content h1{font-size:clamp(38px,3.85vw,60px)!important;margin-bottom:13px!important}
+  body.wt-training-login .brand-points{margin-top:16px!important}
+  body.wt-training-login .training-login-help{padding-block:10px!important;gap:8px!important}
+  body.wt-training-login .field{margin-bottom:10px!important}
+  body.wt-training-login .login-card-header{margin-bottom:12px!important}
+  body.wt-training-login .security-note{margin-top:12px!important;padding:10px!important}
+}
