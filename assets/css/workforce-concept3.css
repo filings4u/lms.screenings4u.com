@@ -377,3 +377,162 @@ body[data-portal-page="dashboard"] .wt-activity-status.is-done{
   font-size:10px!important;padding:5px 9px!important;
  }
 }
+
+/* My Courses — approved Concept 3 layout. Scope every rule to this page. */
+body[data-portal-page="my-courses"] .app .content{padding-top:16px!important}
+body[data-portal-page="my-courses"] .app .hero{
+ min-height:112px!important;border-radius:15px!important;padding:20px 30px 18px 58px!important;
+ background:linear-gradient(100deg,rgba(0,21,51,.97) 0%,rgba(3,39,81,.98) 54%,rgba(4,47,92,.73) 75%,rgba(4,34,67,.26) 100%),url("../images/group-hero.png") right center/auto 140% no-repeat!important;
+ position:relative!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
+ margin-bottom:12px!important;
+}
+body[data-portal-page="my-courses"] .app .hero::before{content:"";position:absolute;left:27px;top:22px;bottom:22px;width:5px;border-radius:4px;background:#ffa700}
+body[data-portal-page="my-courses"] .app .hero h1{font-size:clamp(28px,2.6vw,37px)!important;margin:3px 0 7px!important}
+body[data-portal-page="my-courses"] .app .hero .hero-kicker{font-size:10px!important;letter-spacing:1.3px!important;color:#ffbc37!important}
+body[data-portal-page="my-courses"] .app .hero p{font-size:13px!important;line-height:1.5!important}
+body[data-portal-page="my-courses"] .app #content.wt-myc{margin-top:0!important}
+body[data-portal-page="my-courses"] .wt-myc *{box-sizing:border-box}
+body[data-portal-page="my-courses"] .wt-myc-stats{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:15px
+}
+body[data-portal-page="my-courses"] .wt-myc-stat{
+ min-width:0;display:flex;align-items:center;gap:13px;padding:15px 14px;min-height:88px;
+ background:#fff;border:1px solid #d4e1ef;border-radius:14px;box-shadow:0 8px 21px rgba(0,27,61,.052)
+}
+body[data-portal-page="my-courses"] .wt-myc-stat-icon{
+ display:grid;place-items:center;flex:0 0 43px;width:43px;height:43px;border-radius:50%;
+ color:#0059c4;background:#eef5ff;font-size:22px;font-weight:900
+}
+body[data-portal-page="my-courses"] .wt-myc-stat:nth-child(2) .wt-myc-stat-icon,
+body[data-portal-page="my-courses"] .wt-myc-stat:nth-child(5) .wt-myc-stat-icon{color:#e99a00;background:#fff5e4}
+body[data-portal-page="my-courses"] .wt-myc-stat>div{min-width:0}
+body[data-portal-page="my-courses"] .wt-myc-stat-label{display:block;color:#314969;font-size:11px;font-weight:800;line-height:1.3}
+body[data-portal-page="my-courses"] .wt-myc-stat strong{display:block;margin:2px 0;font-size:25px;font-weight:900;line-height:1.16;color:#001533}
+body[data-portal-page="my-courses"] .wt-myc-stat small{display:block;font-size:10px;line-height:1.4;color:#58708c}
+body[data-portal-page="my-courses"] .wt-myc-section{
+ margin-top:13px;border:1px solid #d4e1ef;border-radius:15px;background:#fff;
+ box-shadow:0 8px 24px rgba(0,29,68,.045);min-width:0;overflow:hidden
+}
+body[data-portal-page="my-courses"] .wt-myc-section-header{
+ display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 15px 11px;
+}
+body[data-portal-page="my-courses"] .wt-myc-section-heading{display:flex;align-items:center;gap:11px;min-width:0}
+body[data-portal-page="my-courses"] .wt-myc-heading-icon{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;color:#0059c4;font-size:21px;font-weight:900}
+body[data-portal-page="my-courses"] .wt-myc-heading-icon.gold{border-radius:50%;background:#ffa700;color:#fff;font-size:14px}
+body[data-portal-page="my-courses"] .wt-myc-section h2{margin:0!important;font-size:20px!important;line-height:1.2!important;font-weight:900!important;color:#001533!important}
+body[data-portal-page="my-courses"] .wt-myc-section p{margin:3px 0 0;font-size:11px;color:#607790;line-height:1.45}
+body[data-portal-page="my-courses"] .wt-myc-heading-link{font-size:11px;color:#0059c4;font-weight:850;text-decoration:none;white-space:nowrap}
+body[data-portal-page="my-courses"] .wt-myc-learning-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 11px 12px}
+body[data-portal-page="my-courses"] .wt-myc-learning-card{
+ min-width:0;display:grid;grid-template-columns:100px minmax(0,1fr);align-items:stretch;
+ padding:9px;gap:12px;border:1px solid #dce7f2;border-radius:12px;background:linear-gradient(150deg,#fff,#f9fbff);
+ box-shadow:0 5px 13px rgba(0,25,60,.075)
+}
+body[data-portal-page="my-courses"] .wt-myc-learning-card>img{
+ display:block;width:100px;height:94px;object-fit:cover;border-radius:9px;background:#e3ebf5
+}
+body[data-portal-page="my-courses"] .wt-myc-learning-info{display:flex;flex-direction:column;gap:6px;min-width:0}
+body[data-portal-page="my-courses"] .wt-myc-learning-info h3{
+ font-size:12px;line-height:1.28;max-height:3.84em;overflow:hidden;font-weight:850;color:#001533;margin:0
+}
+body[data-portal-page="my-courses"] .wt-myc-percent{display:flex;align-items:center;gap:10px;margin-top:auto}
+body[data-portal-page="my-courses"] .wt-myc-percent strong{font-size:11px;min-width:27px;text-align:right;font-weight:850;color:#001533}
+body[data-portal-page="my-courses"] .wt-myc-track{height:8px;min-width:28px;flex:1;display:block;overflow:hidden;border-radius:10px;background:#dfe6f0}
+body[data-portal-page="my-courses"] .wt-myc-track>span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#ffc43c,#efa600)}
+body[data-portal-page="my-courses"] .wt-myc-learning-bottom{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:3px}
+body[data-portal-page="my-courses"] .wt-myc-learning-bottom small{font-size:9px;color:#546b87;line-height:1.3}
+body[data-portal-page="my-courses"] .wt-myc-action{
+ display:inline-flex;align-items:center;justify-content:center;text-align:center;gap:5px;
+ border-radius:7px;min-height:30px;padding:6px 9px;white-space:nowrap;
+ font-size:10px;font-weight:850;text-decoration:none;line-height:1.25;border:1px solid transparent;
+}
+body[data-portal-page="my-courses"] .wt-myc-action.gold{color:#001533;background:linear-gradient(180deg,#ffd174,#ffb524);border-color:#f4b32c}
+body[data-portal-page="my-courses"] .wt-myc-action.gold:hover{background:#ffa700}
+body[data-portal-page="my-courses"] .wt-myc-action.outline,
+body[data-portal-page="my-courses"] .wt-myc-action.extend{color:#0059c4;background:#fff;border-color:#1d75eb}
+body[data-portal-page="my-courses"] .wt-myc-action:hover{text-decoration:none;filter:brightness(.97)}
+body[data-portal-page="my-courses"] .wt-myc-filters{display:flex;align-items:center;gap:10px;margin-left:auto}
+body[data-portal-page="my-courses"] .wt-myc-search-wrap{position:relative}
+body[data-portal-page="my-courses"] .wt-myc-search-wrap::before{content:"⌕";position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#0059c4;font-size:18px;pointer-events:none}
+body[data-portal-page="my-courses"] .wt-myc-filters input,
+body[data-portal-page="my-courses"] .wt-myc-filters select{
+ height:34px;min-height:34px;width:220px;max-width:100%;padding:0 10px;
+ border:1px solid #c9d9ec;border-radius:8px;background:#fff;color:#001533;
+ outline:none;font-size:11px
+}
+body[data-portal-page="my-courses"] .wt-myc-filters input{padding-left:31px}
+body[data-portal-page="my-courses"] .wt-myc-filters select{width:135px;cursor:pointer}
+body[data-portal-page="my-courses"] .wt-myc-filters :is(input,select):focus-visible{outline:2px solid #ffa700;outline-offset:2px}
+body[data-portal-page="my-courses"] .wt-myc-table-scroll{width:100%;overflow-x:auto;scrollbar-width:thin}
+body[data-portal-page="my-courses"] .wt-myc-table{width:100%!important;min-width:970px!important;border-collapse:separate!important;border-spacing:0!important;table-layout:fixed!important}
+body[data-portal-page="my-courses"] .wt-myc-table th{
+ padding:8px 11px!important;border:0!important;color:#354c6d!important;font-size:10px!important;
+ background:#f0f5fb!important;font-weight:850!important;letter-spacing:.015em!important;
+}
+body[data-portal-page="my-courses"] .wt-myc-table th:nth-child(1){width:41%}
+body[data-portal-page="my-courses"] .wt-myc-table th:nth-child(2){width:12%}
+body[data-portal-page="my-courses"] .wt-myc-table th:nth-child(3){width:10%}
+body[data-portal-page="my-courses"] .wt-myc-table th:nth-child(4){width:9%}
+body[data-portal-page="my-courses"] .wt-myc-table th:nth-child(5){width:9%}
+body[data-portal-page="my-courses"] .wt-myc-table th:nth-child(6){width:9%}
+body[data-portal-page="my-courses"] .wt-myc-table th:nth-child(7){width:10%}
+body[data-portal-page="my-courses"] .wt-myc-table td{
+ padding:8px 10px!important;border:0!important;border-bottom:1px solid #e8eef5!important;
+ vertical-align:middle!important;font-size:11px!important;color:#233c5b!important;line-height:1.4!important
+}
+body[data-portal-page="my-courses"] .wt-myc-table tbody tr:last-child td{border-bottom:0!important}
+body[data-portal-page="my-courses"] .wt-myc-table tbody tr:hover{background:#f8fbff}
+body[data-portal-page="my-courses"] .wt-myc-table tr[hidden]{display:none!important}
+body[data-portal-page="my-courses"] .wt-myc-course-cell{display:grid;grid-template-columns:52px minmax(0,1fr);align-items:center;gap:12px;min-width:0}
+body[data-portal-page="my-courses"] .wt-myc-course-cell>img{width:52px;height:44px;object-fit:cover;border-radius:7px;background:#e5edf5}
+body[data-portal-page="my-courses"] .wt-myc-course-copy{min-width:0}
+body[data-portal-page="my-courses"] .wt-myc-course-copy strong{display:block;color:#001533;font-size:11px;line-height:1.35;font-weight:850}
+body[data-portal-page="my-courses"] .wt-myc-course-copy small{
+ display:block;margin-top:3px;color:#657b96;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+body[data-portal-page="my-courses"] .wt-myc-table-progress{display:flex;align-items:center;gap:7px}
+body[data-portal-page="my-courses"] .wt-myc-table-progress strong{font-size:11px;font-weight:850;min-width:30px}
+body[data-portal-page="my-courses"] .wt-myc-table-progress .wt-myc-track{height:7px}
+body[data-portal-page="my-courses"] .wt-myc-badge{
+ display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;
+ border-radius:999px;font-size:9px;line-height:1.2;font-weight:850;
+ color:#243d5c;background:#e6edf7;white-space:nowrap
+}
+body[data-portal-page="my-courses"] .wt-myc-badge-in-progress{background:#fff0cc;color:#975500}
+body[data-portal-page="my-courses"] .wt-myc-badge-completed{background:#e2f6e9;color:#167d47}
+body[data-portal-page="my-courses"] .wt-myc-badge-access-expired{background:#e5eaf2;color:#38516b}
+body[data-portal-page="my-courses"] .wt-myc-empty{padding:22px!important;text-align:center;color:#607790;font-size:12px!important}
+body[data-portal-page="my-courses"] .wt-myc-empty[hidden]{display:none!important}
+body[data-portal-page="my-courses"] .sr-only{
+ position:absolute!important;width:1px!important;height:1px!important;padding:0!important;
+ margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;
+ white-space:nowrap!important;border:0!important
+}
+@media(max-width:1320px){
+ body[data-portal-page="my-courses"] .wt-myc-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+ body[data-portal-page="my-courses"] .wt-myc-learning-grid{grid-template-columns:1fr}
+ body[data-portal-page="my-courses"] .wt-myc-learning-card{grid-template-columns:105px minmax(0,1fr)}
+ body[data-portal-page="my-courses"] .wt-myc-learning-card>img{width:105px}
+}
+@media(max-width:900px){
+ body[data-portal-page="my-courses"] .wt-myc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body[data-portal-page="my-courses"] .wt-myc-section-header{align-items:flex-start;flex-wrap:wrap}
+ body[data-portal-page="my-courses"] .wt-myc-filters{margin:0;width:100%}
+ body[data-portal-page="my-courses"] .wt-myc-search-wrap{flex:1}
+ body[data-portal-page="my-courses"] .wt-myc-filters input{width:100%}
+}
+@media(max-width:620px){
+ body[data-portal-page="my-courses"] .app .hero{padding:22px 17px 22px 36px!important;min-height:136px!important}
+ body[data-portal-page="my-courses"] .app .hero::before{left:18px;top:24px;bottom:24px}
+ body[data-portal-page="my-courses"] .wt-myc-stats{gap:8px}
+ body[data-portal-page="my-courses"] .wt-myc-stat{padding:11px;gap:8px;min-height:90px}
+ body[data-portal-page="my-courses"] .wt-myc-stat-icon{flex-basis:32px;width:32px;height:32px;font-size:16px}
+ body[data-portal-page="my-courses"] .wt-myc-stat strong{font-size:20px}
+ body[data-portal-page="my-courses"] .wt-myc-section h2{font-size:17px!important}
+ body[data-portal-page="my-courses"] .wt-myc-learning-card{grid-template-columns:90px minmax(0,1fr);gap:9px}
+ body[data-portal-page="my-courses"] .wt-myc-learning-card>img{width:90px;height:100%}
+ body[data-portal-page="my-courses"] .wt-myc-learning-bottom{flex-wrap:wrap}
+ body[data-portal-page="my-courses"] .wt-myc-filters{flex-wrap:wrap}
+ body[data-portal-page="my-courses"] .wt-myc-filters select{width:100%}
+ body[data-portal-page="my-courses"] .wt-myc-select-wrap{flex:1;min-width:135px}
+}
