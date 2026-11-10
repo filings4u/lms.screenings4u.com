@@ -1,6 +1,6 @@
-/* One minimal legal strip on LMS pages; no marketing footer. */
+/* Minimal policy links inside the LMS content. No footer element or footer bar. */
 (()=>{"use strict";
-const legalId="wt-lms-legal";
+const id="wt-lms-legal";
 const links=[
 ["https://training.screenings4u.com/terms.html","Terms"],
 ["https://training.screenings4u.com/privacy.html","Privacy"],
@@ -8,17 +8,29 @@ const links=[
 ["https://training.screenings4u.com/disclaimer.html","Disclaimer"],
 ["https://training.screenings4u.com/accessibility.html","Accessibility"]
 ];
+let strip;
 function render(){
- if(document.getElementById(legalId))return;
- const strip=document.createElement("footer");
- strip.id=legalId;
- strip.setAttribute("aria-label","Training legal links");
- const inner=document.createElement("div");inner.className="wt-lms-legal-inner";
- const name=document.createElement("span");name.className="wt-lms-legal-name";
- name.textContent="© "+new Date().getFullYear()+" Workforce Training by screenings4u.";
- const nav=document.createElement("nav");nav.className="wt-lms-legal-links";nav.setAttribute("aria-label","Legal policies");
- links.forEach(([url,title])=>{const a=document.createElement("a");a.href=url;a.textContent=title;nav.appendChild(a)});
- inner.append(name,nav);strip.appendChild(inner);document.body.appendChild(strip);
+  if(document.body.matches(".wt-training-login"))return true;
+  const target=document.querySelector("#trainingPortalApp .main .content") || document.querySelector("#trainingPortalApp .main");
+  if(!target)return false;
+  if(!strip){
+    strip=document.createElement("nav");
+    strip.id=id;
+    strip.setAttribute("aria-label","Training legal policies");
+    const inner=document.createElement("div");
+    inner.className="wt-lms-legal-links";
+    for(const [url,title] of links){
+      const a=document.createElement("a");a.href=url;a.textContent=title;inner.appendChild(a);
+    }
+    strip.appendChild(inner);
+  }
+  if(strip.parentElement!==target)target.appendChild(strip);
+  return true;
 }
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render,{once:true});else render();
+function init(){
+ if(render())return;
+ const observer=new MutationObserver(()=>{if(render())observer.disconnect()});
+ observer.observe(document.getElementById("trainingPortalApp")||document.body,{childList:true,subtree:true});
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
