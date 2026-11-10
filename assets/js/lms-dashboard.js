@@ -209,8 +209,16 @@
           '<a class="wt-course-action" href="'+url+'">'+action+' →</a></div></article>';
       }).join("");
     const recent=lessonProgress.filter(r=>r.lesson?.title).slice(0,5).map(r=>{
-      const status=r.completed_at?"Completed":pct(r.progress_percent)+"% progress";
-      return '<div class="activity-row"><div><strong>'+esc(r.lesson.title)+'</strong><small>'+esc(status)+(r.last_activity_at?' · '+esc(fmtDate(r.last_activity_at)):'')+'</small></div></div>';
+      const done=Boolean(r.completed_at);
+      const progress=pct(r.progress_percent);
+      const status=done?"Completed":progress+"% progress";
+      const date=r.last_activity_at?fmtDate(r.last_activity_at):"";
+      return '<div class="activity-row wt-activity-item">'+
+        '<span class="wt-activity-icon'+(done?' is-done':'')+'" aria-hidden="true">'+(done?'✓':'▶')+'</span>'+
+        '<div class="wt-activity-description"><strong>'+esc(r.lesson.title)+'</strong>'+
+        '<span class="wt-activity-meta">'+(date?'Last activity '+esc(date):'Training activity')+'</span></div>'+
+        '<span class="wt-activity-status'+(done?' is-done':'')+'">'+esc(status)+'</span>'+
+        '</div>';
     }).join("");
     const hero=document.querySelector(".app .hero");
     if(hero){
