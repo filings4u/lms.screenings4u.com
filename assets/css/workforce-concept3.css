@@ -321,3 +321,59 @@ footer,#wt-lms-legal,.wt-lms-footer{display:none!important}
   height:auto!important;max-height:none!important;overflow-y:visible!important;
  }
 }
+
+/* Concept 3: readable, compact Recent Learning Activity panel. */
+body[data-portal-page="dashboard"] .wt-command-left .activity-list{
+ display:flex!important;flex-direction:column!important;gap:0!important;
+ padding:4px 20px 12px!important;background:#fff!important;
+}
+body[data-portal-page="dashboard"] .wt-command-left .activity-row.wt-activity-item{
+ display:grid!important;grid-template-columns:42px minmax(0,1fr) auto!important;
+ align-items:center!important;column-gap:15px!important;min-height:76px!important;
+ padding:13px 0!important;margin:0!important;border:0!important;
+ border-bottom:1px solid #e9eef5!important;background:transparent!important;
+}
+body[data-portal-page="dashboard"] .wt-command-left .activity-row.wt-activity-item:last-child{border-bottom:0!important}
+body[data-portal-page="dashboard"] .wt-activity-icon{
+ display:grid!important;place-items:center!important;justify-self:center!important;
+ width:40px!important;height:40px!important;border-radius:12px!important;
+ background:#edf4ff!important;color:#0059c4!important;font-size:15px!important;
+ font-weight:900!important;border:1px solid #dce9f9!important;
+}
+body[data-portal-page="dashboard"] .wt-activity-icon.is-done{
+ background:#eaf8f0!important;color:#17824b!important;border-color:#caebd8!important;
+}
+body[data-portal-page="dashboard"] .wt-activity-description{
+ min-width:0!important;display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;gap:5px!important;
+}
+body[data-portal-page="dashboard"] .wt-activity-description strong{
+ display:block!important;font-size:13px!important;font-weight:800!important;
+ line-height:1.4!important;letter-spacing:0!important;color:#001533!important;
+ overflow-wrap:anywhere!important;
+}
+body[data-portal-page="dashboard"] .wt-activity-meta{
+ display:block!important;font-size:11px!important;line-height:1.4!important;
+ color:#677e96!important;font-weight:500!important;
+}
+body[data-portal-page="dashboard"] .wt-activity-status{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ white-space:nowrap!important;padding:7px 11px!important;
+ border-radius:100px!important;font-size:11px!important;font-weight:800!important;
+ color:#0059c4!important;background:#ebf3ff!important;
+}
+body[data-portal-page="dashboard"] .wt-activity-status.is-done{
+ color:#16804a!important;background:#e9f7ef!important;
+}
+@media(max-width:620px){
+ body[data-portal-page="dashboard"] .wt-command-left .activity-list{padding:0 15px 9px!important}
+ body[data-portal-page="dashboard"] .wt-command-left .activity-row.wt-activity-item{
+  grid-template-columns:36px minmax(0,1fr)!important;gap:10px!important;
+  min-height:76px!important;padding:12px 0!important;
+ }
+ body[data-portal-page="dashboard"] .wt-activity-icon{width:34px!important;height:34px!important;border-radius:10px!important}
+ body[data-portal-page="dashboard"] .wt-activity-status{
+  grid-column:2!important;justify-self:start!important;margin-top:0!important;
+  font-size:10px!important;padding:5px 9px!important;
+ }
+}
