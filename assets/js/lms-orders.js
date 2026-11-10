@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  console.info("[LMS Orders] build 20261004-training6");
+  console.info("[LMS Orders] build 20261110-orders-redesign");
 
   const SUPABASE_URL = "https://elpbnytpciqnbexiaebp.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVscGJueXRwY2lxbmJleGlhZWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyOTYwMzQsImV4cCI6MjEwNTg3MjAzNH0.kWzPDxpdeorkJJpP6pvt4LCP-W9uGGVAgcQVVheVuE8";
@@ -60,7 +60,7 @@
   };
   const titleCase = value => String(value || "").replace(/[_-]+/g, " ").replace(/\b\w/g, m => m.toUpperCase());
   const badge = (label, kind="") => `<span class="badge ${kind}">${esc(label)}</span>`;
-  const metric = (label, value, sub) => `<article class="metric"><small>${esc(label)}</small><strong>${esc(value)}</strong>${sub ? `<span>${esc(sub)}</span>` : ""}</article>`;
+  const metric = (label, value, sub, icon) => `<article class="wt-orders-metric"><span class="wt-orders-metric-icon" aria-hidden="true">${icon}</span><div><small>${esc(label)}</small><strong>${esc(value)}</strong>${sub ? `<span>${esc(sub)}</span>` : ""}</div></article>`;
 
   function readFontSize(){
     const n = Number(localStorage.getItem(FONT_KEY));
@@ -99,7 +99,7 @@
           </header>
           <section class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Portal navigation"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>Workforce Training by screenings4u</strong></div><span class="mobile-nav-current">Orders</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
           <div class="content">
-            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>Orders</h1><p>Review your Workforce Training by screenings4u purchases and training order history.</p></section>
+            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>Orders</h1><p>Review your training purchases, payment status, and order history in one place.</p></section>
             <section class="section" id="content"></section>
           </div>
         </main>
@@ -215,7 +215,8 @@
     const content = document.getElementById("content");
     const orderValue = allOrders.reduce((sum,o) => sum + Number(o.total || 0), 0);
     const itemCount = allOrders.reduce((sum,o) => sum + (Array.isArray(o.order_items) ? o.order_items.reduce((s,i) => s + Number(i.quantity || 1),0) : 0), 0);
-    const latestOrder = allOrders[0]?.created_at ? fmtDate(allOrders[0].created_at) : "";
+    const latest = [...allOrders].sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0))[0];
+    const latestOrder = latest?.created_at ? fmtDate(latest.created_at) : "";
 
     const term = searchTerm.trim().toLowerCase();
     const filtered = allOrders.filter(order => {
@@ -231,7 +232,7 @@
       return matchesSearch && matchesStatus;
     });
 
-    const rows = filtered.map(order => {
+    const rows = [...filtered].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).map(order => {
       const [statusLabel, kind] = normalizedStatus(order);
       const orderNo = order.order_number || "—";
       const method = order.payment_method ? titleCase(order.payment_method) : order.payment_provider ? titleCase(order.payment_provider) : "—";
@@ -248,27 +249,27 @@
     }).join("");
 
     content.innerHTML = `
-      <div class="metrics">
-        ${metric("Training Orders", allOrders.length, "Orders on this account")}
-        ${metric("Items Purchased", itemCount, "Courses, seats, and add-ons")}
-        ${metric("Order Value", money(orderValue, allOrders[0]?.currency || "usd"), "Recorded order total")}
-        ${metric("Latest Order", latestOrder || "—", latestOrder ? "Most recent purchase" : "No order date")}
+      <div class="wt-orders-metrics">
+        ${metric("Training Orders", allOrders.length, "Orders on this account", "▦")}
+        ${metric("Items Purchased", itemCount, "Courses, seats, and add-ons", "◈")}
+        ${metric("Order Value", money(orderValue, allOrders[0]?.currency || "usd"), "Total recorded order value", "$")}
+        ${metric("Latest Order", latestOrder || "—", latestOrder ? "Most recent order" : "No order date", "◷")}
       </div>
 
-      <div class="section">${renderFilters()}</div>
+      <div class="wt-orders-history">${renderFilters()}</div>
 
-      <div class="section">
-        <div class="panel">
+      <div class="wt-orders-list">
+        <div class="panel wt-orders-panel">
           <div class="panel-head">
             <div>
               <h2>Orders</h2>
-              <p>Open an order to review purchased items, payment, and fulfillment details.</p>
+              <p>View purchased training, payment details, and order status.</p>
             </div>
           </div>
           <div class="table-wrap">
             <table class="orders-table">
               <thead><tr><th>Order</th><th>Purchase</th><th>Method</th><th>Status</th><th>Total</th><th></th></tr></thead>
-              <tbody>${rows || `<tr><td colspan="6"><div class="empty">No orders match the current filters.</div></td></tr>`}</tbody>
+              <tbody>${rows || `<tr><td colspan="6"><div class="wt-orders-empty">No orders match the current search or status.</div></td></tr>`}</tbody>
             </table>
           </div>
         </div>
@@ -277,7 +278,11 @@
 
     document.getElementById("orderSearch")?.addEventListener("input", e => {
       searchTerm = e.target.value || "";
+      const cursor = e.target.selectionStart;
       renderOrders();
+      const nextSearch = document.getElementById("orderSearch");
+      nextSearch?.focus();
+      if (typeof cursor === "number") nextSearch?.setSelectionRange(cursor,cursor);
     });
 
     const status = document.getElementById("orderStatus");
