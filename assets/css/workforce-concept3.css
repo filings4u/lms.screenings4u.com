@@ -291,3 +291,33 @@ footer,#wt-lms-legal,.wt-lms-footer{display:none!important}
  .wt-command .wt-progress-overview{flex-direction:column!important}
  .wt-command .wt-quick-grid{padding:14px!important}
 }
+
+/* LMS desktop scroll containment: the browser page stays fixed, with the portal
+   content scrolling inside the main column and navigation scrolling independently. */
+@media (min-width:821px){
+ html:has(body [data-portal-page]),html:has(body[data-portal-page]){height:100%;overflow:hidden!important}
+ body[data-portal-page]:has(.app){height:100vh!important;height:100dvh!important;min-height:0!important;overflow:hidden!important}
+ body[data-portal-page] #trainingPortalApp{height:100%!important;min-height:0!important;overflow:hidden!important}
+ body[data-portal-page] .app{
+  height:100%!important;max-height:100%!important;min-height:0!important;
+  overflow:hidden!important;align-items:stretch!important;
+ }
+ body[data-portal-page] .app .side{
+  position:relative!important;top:auto!important;left:auto!important;
+  height:100%!important;max-height:100%!important;min-height:0!important;
+  overflow:hidden!important;
+ }
+ body[data-portal-page] .app .main{
+  height:100%!important;max-height:100%!important;min-height:0!important;
+  overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain!important;
+  scrollbar-gutter:stable!important;
+ }
+ body[data-portal-page] .app .top{top:0!important}
+}
+@media(max-width:820px){
+ html:has(body[data-portal-page]){height:auto!important;overflow-x:hidden!important;overflow-y:auto!important}
+ body[data-portal-page],body[data-portal-page] #trainingPortalApp,
+ body[data-portal-page] .app,body[data-portal-page] .app .main{
+  height:auto!important;max-height:none!important;overflow-y:visible!important;
+ }
+}
