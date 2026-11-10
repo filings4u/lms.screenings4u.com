@@ -128,7 +128,7 @@ function renderShell() {
             </div>
             <div class="live-hero-visual" aria-hidden="true">
               <div class="hero-orbit one"></div><div class="hero-orbit two"></div>
-              <div class="hero-screen"><div class="hero-screen-cap">${icon("cap")}</div><strong>screenings4u | Workforce Training by screenings4u</strong></div>
+              <div class="hero-screen"><div class="hero-screen-cap">${icon("cap")}</div><strong>Workforce Training</strong><span>Instructor led sessions</span></div>
             </div>
           </section>
           <section id="liveContent" class="live-content"><div class="live-loading"><span></span><strong>Loading live training…</strong></div></section>
@@ -258,7 +258,7 @@ function renderAppointment(a) {
 }
 
 function renderEmpty() {
-  $("liveContent").innerHTML = `<section class="empty-live-card"><div class="session-cap">${icon("calendar")}</div><span class="section-kicker">LIVE TRAINING</span><h2>No upcoming Live Training</h2><p>You do not currently have a scheduled live training session.</p><div class="empty-live-actions"><a class="join-live-primary as-link" href="lms-schedule-appointment.html">Schedule Appointment</a><a class="my-appointments-btn" href="lms-my-appointments.html">My Appointments</a></div></section>`;
+  $("liveContent").innerHTML = `<section class="empty-live-card"><div class="session-cap">${icon("calendar")}</div><span class="section-kicker">YOUR UPCOMING SESSION</span><h2>No live training scheduled</h2><p>When an instructor-led session is scheduled, your date, instructor, and secure joining details will appear here.</p><div class="empty-live-actions"><a class="join-live-primary as-link" href="lms-schedule-appointment.html">Schedule Appointment →</a><a class="my-appointments-btn" href="lms-my-appointments.html">My Appointments</a></div></section><div class="live-support-grid lt-live-support-empty"><section class="before-you-join-card"><div class="support-card-heading"><span class="support-heading-icon green">${icon("checklist")}</span><div><h3>Prepare for Live Training</h3><p>Get ready for your instructor-led session.</p></div></div><div class="prep-items"><div class="prep-item"><span class="prep-icon blue">${icon("mic")}</span><div><strong>Check your microphone</strong><span>Make sure your audio works before joining.</span></div></div><div class="prep-item"><span class="prep-icon green">${icon("video")}</span><div><strong>Allow camera access</strong><span>Your instructor may request video.</span></div></div><div class="prep-item"><span class="prep-icon orange">${icon("clock")}</span><div><strong>Join when available</strong><span>Follow the joining time shown with your appointment.</span></div></div></div></section><aside class="need-help-card"><div class="support-card-heading"><span class="support-heading-icon blue">${icon("headset")}</span><div><h3>Need help?</h3><p>Questions about your live training?</p></div></div><div class="help-links"><a href="lms-support.html"><span class="help-link-icon">${icon("help")}</span><div><strong>Training Support</strong><span>Get help with scheduling or joining.</span></div><span class="help-arrow">→</span></a><a href="lms-my-appointments.html"><span class="help-link-icon">${icon("calendar")}</span><div><strong>My Appointments</strong><span>Review your booked sessions.</span></div><span class="help-arrow">→</span></a></div></aside></div>`;
 }
 
 function bindSessionControls() {
