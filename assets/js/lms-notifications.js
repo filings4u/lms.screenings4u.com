@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  console.info("[LMS Notifications] build 20261004-training5");
+  console.info("[LMS Notifications] build 20261110-lms-messages-only");
 
   const SUPABASE_URL = "https://elpbnytpciqnbexiaebp.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVscGJueXRwY2lxbmJleGlhZWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyOTYwMzQsImV4cCI6MjEwNTg3MjAzNH0.kWzPDxpdeorkJJpP6pvt4LCP-W9uGGVAgcQVVheVuE8";
@@ -46,7 +46,7 @@
         <main class="main">
           <header class="top"><div class="top-left"><button class="menu" id="menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNav"><span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span></button><div class="top-context"><span class="top-eyebrow">Workforce Training by screenings4u</span><span class="crumb">Notifications</span></div></div><div class="top-right"><div class="top-utility-group top-time-group"><div class="portal-clock"><span id="portalClockDate" class="portal-clock-date"></span><strong id="portalClockTime" class="portal-clock-time"></strong></div></div><div class="top-utility-group top-accessibility-group"><span class="top-utility-label">Text size</span><div class="font-sizer"><button type="button" id="fontDown">A−</button><button type="button" class="font-reset" id="fontSizeValue">Default</button><button type="button" id="fontUp">A+</button></div></div><div class="top-utility-group top-action-group"><span class="pill">LEARNER</span><a class="top-support" href="lms-support.html">Support</a><button class="signout" id="logout" type="button">Sign out</button></div></div></header>
           <section class="mobile-nav" id="mobileNav" aria-hidden="true"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>Workforce Training by screenings4u</strong></div><span class="mobile-nav-current">Notifications</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
-          <div class="content"><section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>Notifications</h1><p>Review course, assessment, certificate, support, and account updates connected to your Workforce Training by screenings4u account.</p></section><section class="section" id="content"></section></div>
+          <div class="content"><section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>Notifications</h1><p>View messages exchanged between you and Workforce Training administrators. Notifications from other portals are not shown.</p></section><section class="section" id="content"></section></div>
         </main>
       </div>`;
   }
@@ -63,71 +63,123 @@
 
   function startClock(){const update=()=>{const now=new Date();const d=document.getElementById("portalClockDate"),t=document.getElementById("portalClockTime");if(d)d.textContent=new Intl.DateTimeFormat("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"}).format(now);if(t)t.textContent=new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}).format(now);};update();window.__s4uLmsNotificationsClock=setInterval(update,1000);}
 
-  function typeOf(row){
-    const m=normalizeMetadata(row.metadata);
-    const source=[m.type,m.notification_type,m.category,m.event,m.kind,row.channel,row.subject,row.body].filter(Boolean).join(" ").toLowerCase();
-    if(source.includes("certificate")) return "certificates";
-    if(source.includes("assessment")||source.includes("quiz")||source.includes("exam")) return "assessments";
-    if(source.includes("support")||source.includes("message")||source.includes("conversation")) return "support";
-    if(source.includes("account")||source.includes("profile")||source.includes("password")||source.includes("login")) return "account";
-    return "courses";
-  }
-  function isRead(row){return readIds.has(row.id);}
-  function target(row,type){
-    const m=normalizeMetadata(row.metadata); const supplied=m.url||m.href||m.link;
-    if(typeof supplied==="string" && supplied.trim()) return supplied.trim();
-    if(type==="certificates") return "lms-certificates.html";
-    if(type==="support") return "lms-support.html";
-    if(type==="account") return "lms-account.html";
-    if(type==="assessments") return "lms-progress.html";
-    return "lms-my-courses.html";
-  }
-  function icon(type){return ({certificates:"✓",assessments:"A",support:"?",account:"○",courses:"▶"})[type]||"✉";}
-  function label(type){return ({certificates:"Certificate",assessments:"Assessment",support:"Support",account:"Account",courses:"Course"})[type]||"Update";}
 
-  async function loadData(userId){
-    const [n,r] = await Promise.all([
-      db.from("notifications").select("id,recipient_user_id,channel,status,subject,body,metadata,scheduled_for,sent_at,delivered_at,created_at").eq("recipient_user_id",userId).order("created_at",{ascending:false}).limit(100),
-      db.from("customer_notification_reads").select("notification_id,read_at").eq("user_id",userId)
-    ]);
-    if(n.error) throw n.error; if(r.error) throw r.error;
-    rows=n.data||[]; readIds=new Set((r.data||[]).map(x=>x.notification_id).filter(Boolean));
+  // Scope this page to the LMS support service, not the global notifications table.
+  // The service resolves the authenticated learner's own tickets and chat threads.
+  let messages=[];
+  let conversations=[];
+  let currentSender="all";
+  let currentKind="all";
+
+  function isCustomer(message){
+    return String(message.sender_type||"").toLowerCase()==="customer" ||
+      (Boolean(message.sender_user_id) && String(message.sender_user_id)===String(currentUser?.id));
+  }
+  function senderType(message){
+    return isCustomer(message)?"customer":"admin";
+  }
+  function isPublicExchange(message){
+    const sender=String(message.sender_type||"").toLowerCase();
+    return Boolean(String(message.body||"").trim()) &&
+      message.is_internal_note!==true &&
+      (isCustomer(message)||["admin","staff","agent","support","administrator","platform"].includes(sender));
+  }
+  function conversationFrom(record,kind){
+    return {
+      kind,
+      id:String(record.id||""),
+      subject:String(record.subject||"Training Support"),
+      status:String(record.status||"open"),
+      ticketNumber:String(record.ticket_number||""),
+      updated:record.last_message_at||record.updated_at||record.created_at,
+      messages:Array.isArray(record.messages)?record.messages:[]
+    };
+  }
+  async function loadData(){
+    const {data,error}=await db.functions.invoke("training-support-actions",{body:{action:"list"}});
+    if(error)throw error;
+    if(data?.error)throw new Error(data.error);
+    const tickets=Array.isArray(data?.tickets)?data.tickets:[];
+    const threads=Array.isArray(data?.threads)?data.threads:[];
+    conversations=[
+      ...tickets.map(record=>conversationFrom(record,"ticket")),
+      ...threads.map(record=>conversationFrom(record,"chat"))
+    ];
+    messages=conversations.flatMap(thread=>thread.messages.filter(isPublicExchange).map(message=>({
+      id:String(message.id||""),
+      threadId:thread.id,
+      kind:thread.kind,
+      subject:thread.subject,
+      number:thread.ticketNumber,
+      status:thread.status,
+      sender:senderType(message),
+      body:String(message.body||""),
+      at:message.created_at||thread.updated
+    }))).sort((a,b)=>new Date(b.at||0)-new Date(a.at||0));
     render();
   }
-
-  function visibleRows(){return rows.filter(row=>{const type=typeOf(row);const state=currentFilter==="all"||(currentFilter==="unread"&&!isRead(row))||(currentFilter==="read"&&isRead(row));const kind=currentType==="all"||currentType===type;return state&&kind;});}
-
+  function visibleRows(){
+    return messages.filter(row=>
+      (currentSender==="all"||row.sender===currentSender)&&
+      (currentKind==="all"||row.kind===currentKind)
+    );
+  }
   function render(){
-    const unread=rows.filter(row=>!isRead(row)).length;
-    const read=rows.length-unread;
-    const latest=rows[0]?.created_at?fmtWhen(rows[0].created_at):"";
+    const learner=messages.filter(row=>row.sender==="customer").length;
+    const admin=messages.filter(row=>row.sender==="admin").length;
+    const activeThreads=new Set(messages.map(row=>row.kind+":"+row.threadId)).size;
+    const latest=messages[0]?.at?fmtWhen(messages[0].at):"";
     const visible=visibleRows();
-    const cards=visible.map(row=>{const type=typeOf(row),unreadState=!isRead(row),href=target(row,type);return `<article class="notification-card ${unreadState?"unread":"read"}"><div class="notification-symbol">${esc(icon(type))}</div><div class="notification-main"><div class="notification-head"><h3>${esc(row.subject||"Workforce Training by screenings4u update")}</h3><span class="notification-time">${esc(fmtWhen(row.created_at||row.sent_at))}</span></div><p class="notification-body">${esc(row.body||"")}</p><div class="notification-meta"><span class="notification-type">${esc(label(type))}</span>${unreadState?'<span class="notification-unread" title="Unread"></span>':""}</div></div><div class="notification-card-actions">${href?`<a href="${esc(href)}">View</a>`:""}${unreadState?`<button type="button" data-mark-read="${esc(row.id)}">Mark Read</button>`:""}</div></article>`;}).join("");
-    document.getElementById("content").innerHTML=`
-      <div class="metrics snapshot-metrics">${metric("Total Notifications",rows.length,"Latest 100 records")}${metric("Unread",unread,"Needs review")}${metric("Read",read,"Already reviewed")}${metric("Latest Update",latest||"—","Most recent notification")}</div>
-      <div class="section"><div class="panel"><div class="panel-head"><div><h2>Notification Center</h2><p class="notification-count">Showing ${visible.length} of ${rows.length} notifications.</p></div></div><div class="notification-toolbar"><div class="notification-filters"><button class="notification-filter ${currentFilter==="all"?"active":""}" data-filter="all">All</button><button class="notification-filter ${currentFilter==="unread"?"active":""}" data-filter="unread">Unread</button><button class="notification-filter ${currentFilter==="read"?"active":""}" data-filter="read">Read</button><select class="notification-select" id="notificationType"><option value="all">All Types</option><option value="courses">Courses</option><option value="assessments">Assessments</option><option value="certificates">Certificates</option><option value="support">Support</option><option value="account">Account</option></select></div><div class="notification-actions-top"><button type="button" id="refreshNotifications">Refresh</button><button type="button" id="markAllRead" ${unread?"":"disabled"}>Mark All Read</button></div></div><div style="height:14px"></div>${cards?`<div class="notification-list">${cards}</div>`:`<div class="notification-empty"><strong>No notifications found</strong><span>There are no real notification records matching this view.</span></div>`}</div></div>`;
-    const typeSelect=document.getElementById("notificationType"); if(typeSelect) typeSelect.value=currentType;
-    bindContent();
+    const cards=visible.map(row=>{
+      const fromAdmin=row.sender==="admin";
+      const heading=fromAdmin?"Training Administrator":"You";
+      const href="lms-support.html?ticket="+encodeURIComponent(row.threadId);
+      return '<article class="wt-notify-message '+(fromAdmin?"admin":"customer")+'">'+
+        '<span class="wt-notify-avatar" aria-hidden="true">'+(fromAdmin?"✉":"◉")+'</span>'+
+        '<div class="wt-notify-message-main"><div class="wt-notify-message-head"><div><span class="wt-notify-sender">'+heading+'</span>'+
+        '<h3>'+esc(row.subject)+'</h3></div><time>'+esc(fmtWhen(row.at))+'</time></div>'+
+        '<p>'+esc(row.body)+'</p><div class="wt-notify-message-meta"><span class="wt-notify-kind">'+(row.kind==="ticket"?"Support Ticket":"Training Message")+'</span>'+
+        (row.number?'<span>'+esc(row.number)+'</span>':"")+'</div></div>'+
+        '<a class="wt-notify-view" href="'+esc(href)+'">View Conversation →</a></article>';
+    }).join("");
+    document.getElementById("content").innerHTML=
+      '<section class="wt-notify-metrics">'+[
+        ["Conversations",activeThreads,"Support threads","▤"],
+        ["Administrator Replies",admin,"Messages from training staff","✉"],
+        ["Your Messages",learner,"Messages you sent","◉"],
+        ["Latest Message",latest||"—","Most recent exchange","◷"]
+      ].map(([name,value,sub,icon])=>'<article class="wt-notify-metric"><span class="wt-notify-metric-icon" aria-hidden="true">'+icon+'</span><div><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong><span>'+esc(sub)+'</span></div></article>').join("")+'</section>'+
+      '<section class="wt-notify-panel"><div class="wt-notify-panel-head"><div><h2>Training Messages</h2>'+
+      '<p>Messages exchanged between you and the Workforce Training support team.</p></div>'+
+      '<a class="wt-notify-primary" href="lms-support.html">Send a Message →</a></div>'+
+      '<div class="wt-notify-toolbar"><div class="wt-notify-filters" role="group" aria-label="Filter by sender">'+
+      ['all','admin','customer'].map(v=>'<button type="button" data-sender="'+v+'" aria-pressed="'+(currentSender===v)+'" class="'+(currentSender===v?"active":"")+'">'+({all:"All Messages",admin:"From Admin",customer:"From Me"}[v])+'</button>').join("")+
+      '</div><div class="wt-notify-toolbar-right"><label><span class="sr-only">Conversation type</span><select id="wtNotifyKind"><option value="all">All Conversations</option><option value="ticket">Support Tickets</option><option value="chat">Messages</option></select></label>'+
+      '<button type="button" class="wt-notify-refresh" id="refreshNotifications">Refresh</button></div></div>'+
+      '<div class="wt-notify-count" aria-live="polite">Showing '+visible.length+' of '+messages.length+' training messages</div>'+
+      (cards?'<div class="wt-notify-messages">'+cards+'</div>':
+        '<div class="wt-notify-empty"><span class="wt-notify-empty-icon" aria-hidden="true">✉</span><h3>No training messages yet</h3>'+
+        '<p>Only conversations between you and the Workforce Training team appear here. Work orders and notifications from other portals are excluded.</p>'+
+        '<a class="wt-notify-primary" href="lms-support.html">Contact Training Support →</a></div>')+
+      '</section>';
+    const select=document.getElementById("wtNotifyKind");
+    if(select)select.value=currentKind;
+    document.querySelectorAll("[data-sender]").forEach(btn=>btn.addEventListener("click",()=>{currentSender=btn.dataset.sender;render()}));
+    select?.addEventListener("change",e=>{currentKind=e.target.value;render()});
+    document.getElementById("refreshNotifications")?.addEventListener("click",()=>loadData().catch(showError));
   }
-
-  function bindContent(){
-    document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{currentFilter=btn.dataset.filter||"all";render();}));
-    document.getElementById("notificationType")?.addEventListener("change",e=>{currentType=e.target.value||"all";render();});
-    document.getElementById("refreshNotifications")?.addEventListener("click",()=>loadData(currentUser.id).catch(showError));
-    document.getElementById("markAllRead")?.addEventListener("click",()=>markAll().catch(showError));
-    document.querySelectorAll("[data-mark-read]").forEach(btn=>btn.addEventListener("click",()=>markRead(btn.dataset.markRead).catch(showError)));
+  function showError(error){
+    console.error("[LMS Training Messages]",error);
+    const content=document.getElementById("content");
+    if(content)content.innerHTML='<div class="notification-error">'+esc(error?.message||"Unable to load training messages.")+'</div>';
   }
-
-  async function markRead(id){if(!id||readIds.has(id))return;const {error}=await db.from("customer_notification_reads").upsert({notification_id:id,user_id:currentUser.id,read_at:new Date().toISOString()},{onConflict:"notification_id,user_id"});if(error)throw error;readIds.add(id);render();}
-  async function markAll(){const pending=rows.filter(r=>!isRead(r));if(!pending.length)return;const now=new Date().toISOString();const {error}=await db.from("customer_notification_reads").upsert(pending.map(r=>({notification_id:r.id,user_id:currentUser.id,read_at:now})),{onConflict:"notification_id,user_id"});if(error)throw error;pending.forEach(r=>readIds.add(r.id));render();}
-  function showError(error){console.error("[LMS Notifications]",error);const content=document.getElementById("content");if(content)content.innerHTML=`<div class="notification-error">${esc(error?.message||"Unable to load notifications.")}</div>`;}
 
   async function init(){
     renderShell(); bindShell(); startClock();
     const {data,error}=await db.auth.getSession(); if(error)throw error;
     const session=data?.session; if(!session?.user?.id){window.location.replace("https://lms.screenings4u.com/training-login.html?returnTo=%2Flms-notifications.html");return;}
     currentUser=session.user;
-    try{await loadData(currentUser.id);}catch(error){showError(error);}
+    try{await loadData();}catch(error){showError(error);}
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true}); else init();
