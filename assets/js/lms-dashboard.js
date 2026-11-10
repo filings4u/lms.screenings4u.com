@@ -266,6 +266,28 @@
     }
     try{
       await loadDashboard(session.user.id);
+      // The account page stores the customer's name in user_profiles.
+      // Use that name for the welcome message without displaying their email.
+      const metadata=session.user.user_metadata||{};
+      const authName=[metadata.first_name,metadata.last_name].filter(Boolean).join(" ").trim() ||
+        String(metadata.full_name||metadata.name||"").trim();
+      let customerName=authName;
+      try {
+        const {data:profile,error:profileError}=await db.from("user_profiles")
+          .select("first_name,last_name,display_name")
+          .eq("id",session.user.id).maybeSingle();
+        if(profileError)throw profileError;
+        if(profile){
+          customerName=[profile.first_name,profile.last_name].filter(Boolean).join(" ").trim() ||
+            String(profile.display_name||"").trim() || authName;
+        }
+      }catch(profileError){
+        console.warn("[LMS Dashboard] Customer profile name unavailable:",profileError);
+      }
+      const welcomeHeading=document.querySelector(".app .hero h1");
+      if(welcomeHeading && customerName){
+        welcomeHeading.textContent="Welcome back, "+customerName+".";
+      }
     }catch(error){
       console.error("[LMS Dashboard]", error);
       throw error;
