@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const BUILD = "20261004-training3";
+  const BUILD = "20261110-appointments-redesign";
   console.info(`[LMS My Appointments] build ${BUILD}`);
 
   const SUPABASE_URL = "https://elpbnytpciqnbexiaebp.supabase.co";
@@ -170,36 +170,40 @@
   }
 
   function renderContent(){
-    const upcoming = state.appointments.filter(isUpcoming);
-    const completed = state.appointments.filter(a => norm(a.status) === "completed");
-    const cancelled = state.appointments.filter(a => norm(a.status) === "cancelled");
-    const next = [...upcoming].sort((a,b) => new Date(a.start_at) - new Date(b.start_at))[0];
-    const rows = filteredAppointments();
-
-    document.getElementById("content").innerHTML = `
-      <div class="metrics">
-        <article class="metric"><small>Upcoming</small><strong>${upcoming.length}</strong><span>Scheduled sessions</span></article>
-        <article class="metric"><small>Completed</small><strong>${completed.length}</strong><span>Past sessions completed</span></article>
-        <article class="metric"><small>Cancelled</small><strong>${cancelled.length}</strong><span>Cancelled appointments</span></article>
-        <article class="metric"><small>Next Session</small><strong>${next ? esc(fmtDate(next.start_at).replace(/, \d{4}$/,"")) : "—"}</strong>${next ? `<span>${esc(fmtTime(next.start_at))}</span>` : ""}</article>
-      </div>
-      <div class="section panel">
-        <div class="panel-head appointments-toolbar">
-          <div><h2>Training Sessions</h2><p>Your live training appointments and session status.</p></div>
-          <div class="appointments-tabs" role="group" aria-label="Filter appointments">
-            <button class="appointments-tab ${state.filter === "upcoming" ? "active" : ""}" type="button" data-filter="upcoming">Upcoming</button>
-            <button class="appointments-tab ${state.filter === "past" ? "active" : ""}" type="button" data-filter="past">Past</button>
-            <button class="appointments-tab ${state.filter === "all" ? "active" : ""}" type="button" data-filter="all">All</button>
-          </div>
-        </div>
-        <div class="appointments-grid" id="appointmentsGrid">${rows.length ? rows.map(renderAppointment).join("") : `<div class="empty">${state.filter === "upcoming" ? "No upcoming appointments." : state.filter === "past" ? "No past appointments." : "No appointments."}</div>`}</div>
-      </div>`;
-
-    document.querySelectorAll("[data-filter]").forEach(btn => btn.addEventListener("click", () => {
-      state.filter = btn.dataset.filter;
+    const upcoming=state.appointments.filter(isUpcoming);
+    const completed=state.appointments.filter(a=>norm(a.status)==="completed");
+    const cancelled=state.appointments.filter(a=>norm(a.status)==="cancelled");
+    const next=[...upcoming].sort((a,b)=>new Date(a.start_at)-new Date(b.start_at))[0];
+    const rows=filteredAppointments();
+    const stats=[
+      ["Upcoming",upcoming.length,"Scheduled sessions","◷"],
+      ["Completed",completed.length,"Sessions finished","✓"],
+      ["Cancelled",cancelled.length,"Cancelled appointments","⊘"],
+      ["Next Session",next?fmtDate(next.start_at).replace(/, \d{4}$/,""):"—",next?fmtTime(next.start_at):"Nothing scheduled","▦"]
+    ];
+    const count=rows.length;
+    const emptyText=state.filter==="upcoming"?"No upcoming appointments":state.filter==="past"?"No past appointments":"No appointments found";
+    document.getElementById("content").classList.add("wt-appointments");
+    document.getElementById("content").innerHTML=
+      '<section class="wt-appt-stats">'+stats.map(([label,value,detail,icon])=>
+        '<article class="wt-appt-stat"><span class="wt-appt-stat-icon" aria-hidden="true">'+icon+'</span><div><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong><span>'+esc(detail)+'</span></div></article>').join("")+'</section>'+
+      '<section class="wt-appt-panel"><div class="wt-appt-heading"><div><h2>Training Sessions</h2><p>Manage live training appointments and review previous sessions.</p></div>'+
+      '<div class="wt-appt-tabs" role="group" aria-label="Filter appointments">'+
+      '<button type="button" data-filter="upcoming" aria-pressed="'+(state.filter==="upcoming")+'" class="'+(state.filter==="upcoming"?"active":"")+'">Upcoming</button>'+
+      '<button type="button" data-filter="past" aria-pressed="'+(state.filter==="past")+'" class="'+(state.filter==="past"?"active":"")+'">Past</button>'+
+      '<button type="button" data-filter="all" aria-pressed="'+(state.filter==="all")+'" class="'+(state.filter==="all"?"active":"")+'">All</button>'+
+      '</div></div>'+
+      (count?'<div class="wt-appt-list">'+rows.map(renderAppointment).join("")+'</div>':
+      '<div class="wt-appt-empty"><span class="wt-appt-empty-icon" aria-hidden="true">▦</span><h3>'+emptyText+'</h3>'+
+      '<p>'+(state.filter==="upcoming"?"Your next scheduled instructor-led session will appear here.":state.filter==="past"?"Completed and cancelled sessions will appear here.":"Book a training appointment to get started.")+'</p>'+
+      '<div class="wt-appt-empty-actions"><a class="wt-appt-button" href="lms-schedule-appointment.html">Schedule Appointment →</a><a class="wt-appt-button secondary" href="lms-live-training.html">Live Training</a></div></div>')+'</section>'+
+      '<div class="wt-appt-help"><div><h2>Need help with your training?</h2><p>Find your scheduled sessions, prepare for a live appointment, or contact support.</p></div>'+
+      '<a href="lms-support.html" class="wt-appt-button secondary">Contact Support →</a></div>';
+    document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{
+      state.filter=btn.dataset.filter;
       renderContent();
     }));
-    document.querySelectorAll("[data-cancel-id]").forEach(btn => btn.addEventListener("click", cancelAppointment));
+    document.querySelectorAll("[data-cancel-id]").forEach(btn=>btn.addEventListener("click",cancelAppointment));
   }
 
   function renderAppointment(a){
