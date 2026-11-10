@@ -162,3 +162,22 @@ body[data-s4u-portal="training"] input:focus-visible{outline:3px solid #ffbd3b!i
  body:not(.lms-course-player-immersive) .app .hero h1{font-size:27px!important}
  #wt-lms-legal{padding:17px 14px!important}
 }
+
+/* Footerless approved LMS: only unobtrusive legal links in the main content. */
+body:not(.lms-course-player-immersive) .app{min-height:100svh!important}
+body:not(.lms-course-player-immersive) .app .content{padding-bottom:25px!important}
+body #wt-lms-legal{
+  display:block!important;position:static!important;clear:both!important;
+  background:transparent!important;color:#64758b!important;min-height:0!important;
+  width:100%!important;margin:32px 0 0!important;padding:17px 0 0!important;
+  border:0!important;border-top:1px solid #dce6f0!important;
+  box-shadow:none!important;text-align:left!important;font:500 12px/1.6 Inter,Arial,sans-serif!important;
+}
+body #wt-lms-legal .wt-lms-legal-links{display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:flex-start!important;gap:9px 22px!important}
+body #wt-lms-legal a{color:#506783!important;font-weight:650!important;text-decoration:none!important}
+body #wt-lms-legal a:hover{color:#0059c4!important;text-decoration:underline!important}
+@media(max-width:820px){
+ body:not(.lms-course-player-immersive) .app{min-height:100svh!important}
+ body #wt-lms-legal{margin-top:24px!important;padding-top:16px!important;text-align:center!important}
+ body #wt-lms-legal .wt-lms-legal-links{justify-content:center!important;gap:10px 16px!important}
+}
