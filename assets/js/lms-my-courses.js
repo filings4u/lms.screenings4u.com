@@ -97,7 +97,7 @@
           </header>
           <section class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Portal navigation"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>Workforce Training by screenings4u</strong></div><span class="mobile-nav-current">My Courses</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
           <div class="content">
-            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>My Courses</h1><p>View assigned training, continue active courses, and access completed course records.</p></section>
+            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>My Courses</h1><p>View your training, continue active courses, and access completed records and certificates.</p></section>
             <section class="section" id="content"></section>
           </div>
         </main>
@@ -170,61 +170,98 @@
   }
 
   function renderCourses(rows, certificates){
-    const active = rows.filter(row => row.status === "active" && (!row.expires_at || new Date(row.expires_at).getTime() > Date.now()) && pct(row.progress_percent) < 100);
-    const expired = rows.filter(row => row.status === "expired" || (row.expires_at && new Date(row.expires_at).getTime() <= Date.now()));
-    const completed = rows.filter(row => !expired.includes(row) && (row.status === "completed" || pct(row.progress_percent) >= 100));
-    const avgProgress = rows.length ? Math.round(rows.reduce((sum,row) => sum + pct(row.progress_percent), 0) / rows.length) : 0;
-    const inProgress = active.filter(row => pct(row.progress_percent) > 0);
-
-    const metrics = [
-      ["Active Courses", active.length, "Training in progress"],
-      ["Completed Courses", completed.length, "Finished enrollments"],
-      ["Expired Access", expired.length, "Previous enrollments shown"],
-      ["Average Progress", `${avgProgress}%`, "Across assigned courses"],
-      ["Certificates", certificates.length, "Issued certificates"]
-    ];
-
-    const continueRows = inProgress.slice(0, 5).map(row => {
-      const progress = pct(row.progress_percent);
-      return `<a class="attention-row" href="lms-course-player.html?course=${encodeURIComponent(row.course.id)}&enrollment=${encodeURIComponent(row.id)}"><div><strong>${esc(row.course.title)}</strong><span>${progress}% complete${row.last_activity_at ? ` · Last activity ${esc(fmtDate(row.last_activity_at))}` : ""}</span></div><span>→</span></a>`;
-    }).join("");
-
-    const sortedRows = [...rows].sort((a,b) => Number(b.course.slug === "dot-specimen-collector-training") - Number(a.course.slug === "dot-specimen-collector-training") || Number(a.status === "expired") - Number(b.status === "expired"));
-    const tableRows = sortedRows.map(row => {
-      const progress = pct(row.progress_percent);
-      const status = statusLabel(row);
-      const certificate = certificates.find(item => item.enrollment_id === row.id);
-      let href = `lms-course-player.html?course=${encodeURIComponent(row.course.id)}&enrollment=${encodeURIComponent(row.id)}`;
-      let action = progress > 0 ? "Continue" : "Start";
-
-      if (status === "Access Expired") {
-        const params = new URLSearchParams({product:"training-course-extension-30-days",course:row.course.id,enrollment:row.id});
-        href = "lms-checkout.html?" + params.toString();
-        action = "Extend Access · $115";
-      } else if (status === "Completed" && certificate){
-        href = `lms-certificates.html?certificate=${encodeURIComponent(certificate.id)}`;
-        action = "Certificate";
-      } else if (status === "Completed") {
-        action = "Review";
-      }
-
-      return `<tr>
-        <td><strong>${esc(row.course.title)}</strong>${row.course.slug?.includes("train-the-trainer") || row.course.slug?.includes("plus-hair") ? '<small class="enrollment-package-label">Collector training package · separate course enrollment</small>' : ""}${row.course.short_description ? `<small>${esc(row.course.short_description)}</small>` : ""}${status === "Access Expired" ? '<small>Previous course record — progress preserved; access requires an extension.</small>' : ""}</td>
-        <td>${progress}%</td>
-        <td>${badge(status)}</td>
-        <td>${row.enrolled_at ? esc(fmtDate(row.enrolled_at)) : ""}</td>
-        <td>${row.expires_at ? esc(fmtDate(row.expires_at)) : ""}</td>
-        <td>${row.last_activity_at ? esc(fmtDate(row.last_activity_at)) : ""}</td>
-        <td><a class="snapshot-link" href="${href}">${esc(action)}</a></td>
-      </tr>`;
-    }).join("");
-
-    const content = document.getElementById("content");
-    content.innerHTML = `
-      <div class="metrics">${metrics.map(item => metric(...item)).join("")}</div>
-      ${continueRows ? `<div class="section"><div class="panel"><div class="panel-head"><div><h2>Continue Learning</h2><p>Active courses you have already started.</p></div></div><div class="snapshot-attention">${continueRows}</div></div></div>` : ""}
-      ${tableRows ? `<div class="section"><div class="panel"><div class="panel-head"><div><h2>My Courses</h2><p>All current and previous Workforce Training by screenings4u enrollments, including expired access.</p></div><a class="snapshot-link" href="lms-courses.html">Course Library</a></div><div class="table-wrap"><table><thead><tr><th>Course</th><th>Progress</th><th>Status</th><th>Enrolled</th><th>Access Through</th><th>Last Activity</th><th></th></tr></thead><tbody>${tableRows}</tbody></table></div></div></div>` : ""}`;
-  }
+  const now=Date.now();
+  const isExpired=row=>row.status==="expired"||(row.expires_at&&new Date(row.expires_at).getTime()<=now);
+  const statusFor=row=>isExpired(row)?"Access Expired":row.status==="completed"||pct(row.progress_percent)>=100?"Completed":pct(row.progress_percent)>0?"In Progress":"Not Started";
+  const active=rows.filter(row=>!isExpired(row)&&statusFor(row)!=="Completed");
+  const completed=rows.filter(row=>statusFor(row)==="Completed");
+  const expired=rows.filter(isExpired);
+  const inProgress=active.filter(row=>pct(row.progress_percent)>0);
+  const average=rows.length?Math.round(rows.reduce((sum,row)=>sum+pct(row.progress_percent),0)/rows.length):0;
+  const imageFor=row=>{
+    const slug=String(row.course?.slug||"").toLowerCase();
+    if(slug.includes("hazmat")||slug.includes("hazard"))return "images/hazmat-hero.png";
+    if(slug.includes("der")||slug.includes("designated"))return "images/der-hero.png";
+    if(slug.includes("supervisor")||slug.includes("suspicion"))return "images/supervisor-hero.png";
+    if(slug.includes("employee")||slug.includes("alcohol"))return "images/employee-hero.png";
+    if(slug.includes("collector")||slug.includes("specimen"))return "images/collector-hero.png";
+    return "images/group-hero.png";
+  };
+  const linkFor=row=>{
+    const status=statusFor(row),progress=pct(row.progress_percent);
+    const cert=certificates.find(c=>c.enrollment_id===row.id);
+    if(status==="Access Expired")return {href:"lms-checkout.html?"+new URLSearchParams({product:"training-course-extension-30-days",course:row.course.id,enrollment:row.id}).toString(),label:"Extend Access · $115",kind:"extend"};
+    if(status==="Completed"&&cert)return {href:"lms-certificates.html?certificate="+encodeURIComponent(cert.id),label:"Certificate",kind:"outline"};
+    return {href:"lms-course-player.html?course="+encodeURIComponent(row.course.id)+"&enrollment="+encodeURIComponent(row.id),label:status==="Completed"?"Review":progress>0?"Continue":"Start",kind:progress>0?"gold":"outline"};
+  };
+  const statDefs=[
+    ["Active Courses",active.length,"Training in progress","▤"],
+    ["Completed Courses",completed.length,"Finished enrollments","✓"],
+    ["Expired Access",expired.length,"Previous enrollments shown","▣"],
+    ["Average Progress",average+"%","Across assigned courses","▥"],
+    ["Certificates",certificates.length,"Issued certificates","✧"]
+  ];
+  const metricCards=statDefs.map(([label,value,detail,icon],i)=>
+    '<article class="wt-myc-stat wt-myc-stat-'+i+'"><span class="wt-myc-stat-icon" aria-hidden="true">'+icon+'</span><div><span class="wt-myc-stat-label">'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></div></article>'
+  ).join("");
+  const learningCards=[...inProgress].sort((a,b)=>new Date(b.last_activity_at||0)-new Date(a.last_activity_at||0)).slice(0,3).map(row=>{
+    const progress=pct(row.progress_percent);
+    const action=linkFor(row);
+    return '<article class="wt-myc-learning-card">'+
+      '<img src="'+imageFor(row)+'" alt="" loading="lazy">'+
+      '<div class="wt-myc-learning-info"><h3 title="'+esc(row.course.title)+'">'+esc(row.course.title)+'</h3>'+
+      '<div class="wt-myc-percent"><span class="wt-myc-track"><span style="width:'+progress+'%"></span></span><strong>'+progress+'%</strong></div>'+
+      '<div class="wt-myc-learning-bottom"><small>Last activity: '+(row.last_activity_at?esc(fmtDate(row.last_activity_at)):"Not recorded")+'</small>'+
+      '<a class="wt-myc-action gold" href="'+esc(action.href)+'">Continue Course ›</a></div></div></article>';
+  }).join("");
+  const ordered=[...rows].sort((a,b)=>{
+    const weight=r=>isExpired(r)?3:statusFor(r)==="Completed"?2:statusFor(r)==="Not Started"?1:0;
+    return weight(a)-weight(b)||(new Date(b.last_activity_at||0)-new Date(a.last_activity_at||0));
+  });
+  const tableRows=ordered.map(row=>{
+    const progress=pct(row.progress_percent),status=statusFor(row),action=linkFor(row);
+    const description=String(row.course.short_description||"").trim();
+    return '<tr class="wt-myc-row" data-status="'+esc(status)+'" data-search="'+esc((row.course.title+" "+description).toLowerCase())+'">'+
+      '<td data-label="Course"><div class="wt-myc-course-cell"><img src="'+imageFor(row)+'" alt="" loading="lazy"><div class="wt-myc-course-copy"><strong>'+esc(row.course.title)+'</strong>'+
+      (description?'<small title="'+esc(description)+'">'+esc(description)+'</small>':"")+
+      (status==="Access Expired"?'<small>Previous course record; progress is preserved.</small>':"")+
+      '</div></div></td>'+
+      '<td data-label="Progress"><div class="wt-myc-table-progress"><strong>'+progress+'%</strong><span class="wt-myc-track"><span style="width:'+progress+'%"></span></span></div></td>'+
+      '<td data-label="Status"><span class="wt-myc-badge wt-myc-badge-'+status.toLowerCase().replace(/\\s+/g,"-")+'">'+esc(status)+'</span></td>'+
+      '<td data-label="Enrolled">'+(row.enrolled_at?esc(fmtDate(row.enrolled_at)):"—")+'</td>'+
+      '<td data-label="Access Through">'+(row.expires_at?esc(fmtDate(row.expires_at)):"—")+'</td>'+
+      '<td data-label="Last Activity">'+(row.last_activity_at?esc(fmtDate(row.last_activity_at)):"—")+'</td>'+
+      '<td data-label="Action"><a class="wt-myc-action '+action.kind+'" href="'+esc(action.href)+'">'+esc(action.label)+' ›</a></td></tr>';
+  }).join("");
+  const content=document.getElementById("content");
+  content.classList.add("wt-myc");
+  content.innerHTML=
+    '<section class="wt-myc-stats" aria-label="Training overview">'+metricCards+'</section>'+
+    '<section class="wt-myc-section wt-myc-learning" aria-labelledby="mycContinueTitle"><div class="wt-myc-section-header"><div class="wt-myc-section-heading"><span class="wt-myc-heading-icon gold">▶</span><div><h2 id="mycContinueTitle">Continue Learning</h2><p>Pick up where you left off on your active training.</p></div></div><a class="wt-myc-heading-link" href="#mycCourseList">View All Active Courses →</a></div>'+
+    (learningCards?'<div class="wt-myc-learning-grid">'+learningCards+'</div>':'<p class="wt-myc-empty">Courses you have started will appear here.</p>')+'</section>'+
+    '<section class="wt-myc-section wt-myc-library" id="mycCourseList" aria-labelledby="mycCoursesTitle"><div class="wt-myc-section-header"><div class="wt-myc-section-heading"><span class="wt-myc-heading-icon">▤</span><div><h2 id="mycCoursesTitle">My Courses</h2><p>All current and previous enrollments, including expired access.</p></div></div>'+
+    '<div class="wt-myc-filters"><label class="wt-myc-search-wrap"><span class="sr-only">Search my courses</span><input type="search" id="mycSearch" placeholder="Search my courses…" autocomplete="off"></label>'+
+    '<label class="wt-myc-select-wrap"><span class="sr-only">Filter course status</span><select id="mycStatus"><option value="all">All Statuses</option><option value="In Progress">In Progress</option><option value="Not Started">Not Started</option><option value="Completed">Completed</option><option value="Access Expired">Access Expired</option></select></label></div></div>'+
+    '<div class="wt-myc-table-scroll"><table class="wt-myc-table"><thead><tr><th>Course</th><th>Progress</th><th>Status</th><th>Enrolled</th><th>Access Through</th><th>Last Activity</th><th>Action</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'+
+    '<p id="mycNoMatches" class="wt-myc-empty" hidden>No courses match your search or selected status.</p></section>';
+  const search=document.getElementById("mycSearch");
+  const filter=document.getElementById("mycStatus");
+  const applyFilter=()=>{
+    const q=search.value.trim().toLowerCase(),s=filter.value;
+    let visible=0;
+    content.querySelectorAll(".wt-myc-row").forEach(el=>{
+      const show=(s==="all"||el.dataset.status===s)&&(!q||el.dataset.search.includes(q));
+      el.hidden=!show;
+      if(show)visible++;
+    });
+    document.getElementById("mycNoMatches").hidden=visible!==0;
+  };
+  search.addEventListener("input",applyFilter);
+  filter.addEventListener("change",applyFilter);
+  content.querySelector(".wt-myc-heading-link")?.addEventListener("click",()=>{
+    filter.value="In Progress";applyFilter();
+  });
+}
 
   async function init(){
     renderShell();
