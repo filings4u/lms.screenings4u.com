@@ -97,7 +97,7 @@ function renderShell() {
   $("trainingPortalApp").innerHTML = `
     <div class="app">
       <aside class="side">
-        <div class="brand"><img src="images/training-logo.png" alt="Workforce Training by screenings4u"></div>
+        <div class="brand"><img src="images/logo2.png" alt="Workforce Training by screenings4u"></div>
         <nav class="nav"><div class="nav-title">Workforce Training by screenings4u</div>${links}</nav>
         <div class="side-foot"><div>Portal</div><strong>lms.screenings4u.com</strong></div>
       </aside>
