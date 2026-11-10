@@ -1139,10 +1139,12 @@
       );
 
       if (scrollTop) {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
+        var lessonScroller = document.querySelector(".course-player-main");
+        if (lessonScroller && window.matchMedia("(min-width:981px)").matches) {
+          lessonScroller.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
       }
 
     } finally {
