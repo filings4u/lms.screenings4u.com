@@ -156,69 +156,93 @@
   }
 
   function renderDashboard(rows, certificates, lessonProgress){
-    const active = rows.filter(r => r.status === "active" && (!r.expires_at || new Date(r.expires_at).getTime() > Date.now()) && pct(r.progress_percent) < 100);
-    const expired = rows.filter(r => r.status === "expired" || (r.expires_at && new Date(r.expires_at).getTime() <= Date.now()));
-    const completed = rows.filter(r => !expired.includes(r) && (r.status === "completed" || pct(r.progress_percent) >= 100));
-    const notStarted = active.filter(r => pct(r.progress_percent) === 0).length;
-    const avgProgress = rows.length ? Math.round(rows.reduce((sum,r) => sum + pct(r.progress_percent), 0) / rows.length) : 0;
-    const completedLessons = lessonProgress.filter(r => r.completed_at || Number(r.progress_percent) >= 100).length;
-    const minutes = lessonProgress.reduce((sum, row) => {
-      if (!row.started_at || !row.completed_at) return sum;
-      const start = new Date(row.started_at).getTime();
-      const end = new Date(row.completed_at).getTime();
-      if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) return sum;
-      return sum + Math.min((end - start) / 60000, 480);
-    }, 0);
-    const learningHours = Math.round((minutes / 60) * 10) / 10;
-
-    const metrics = [
-      ["Active Courses", active.length, "Training in progress"],
-      ["Completed Courses", completed.length, "Finished enrollments"],
-      ["Expired Access", expired.length, "Previous enrollments shown"],
-      ["Total Enrollments", rows.length, "Assigned courses"],
-      ["Certificates", certificates.length, "Issued certificates"],
-      ["Average Progress", `${avgProgress}%`, "Across assigned courses"],
-      ["Completed Lessons", completedLessons, "Recorded completions"],
-      ["Learning Hours", learningHours, "Recorded course activity"],
-      ["Not Started", notStarted, "Active courses at 0%"]
+    const now=Date.now();
+    const expired=rows.filter(r=>r.status==="expired"||(r.expires_at&&new Date(r.expires_at).getTime()<=now));
+    const completed=rows.filter(r=>!expired.includes(r)&&(r.status==="completed"||pct(r.progress_percent)>=100));
+    const active=rows.filter(r=>!expired.includes(r)&&!completed.includes(r));
+    const inProgress=active.filter(r=>pct(r.progress_percent)>0);
+    const notStarted=active.filter(r=>pct(r.progress_percent)===0);
+    const overall=rows.length?Math.round(rows.reduce((total,r)=>total+pct(r.progress_percent),0)/rows.length):0;
+    const metrics=[
+      ["Enrolled Courses",rows.length,"Your assigned training"],
+      ["In Progress",inProgress.length,"Courses underway"],
+      ["Completed",completed.length,"Finished courses"],
+      ["Certificates",certificates.length,"Issued documents"]
     ];
-
-    const attention = active.slice(0, 5).map(r => {
-      const progress = pct(r.progress_percent);
-      return `<a class="attention-row" href="lms-course-player.html?course=${encodeURIComponent(r.course.id)}&enrollment=${encodeURIComponent(r.id)}"><div><strong>${esc(r.course.title)}</strong><span>${progress}% complete</span></div><span>→</span></a>`;
+    const images={
+      "dot-specimen-collector-training":"images/collector-hero.png",
+      "der-training":"images/der-hero.png",
+      "supervisor-training":"images/supervisor-hero.png",
+      "employee-training":"images/employee-hero.png",
+      "hazmat-training":"images/hazmat-hero.png"
+    };
+    const imageFor=r=>{
+      const slug=String(r.course?.slug||"").toLowerCase();
+      if(images[slug])return images[slug];
+      if(slug.includes("collector"))return images["dot-specimen-collector-training"];
+      if(slug.includes("der-"))return images["der-training"];
+      if(slug.includes("supervisor"))return images["supervisor-training"];
+      if(slug.includes("employee"))return images["employee-training"];
+      if(slug.includes("hazmat"))return images["hazmat-training"];
+      return "images/group-hero.png";
+    };
+    const courseTiles=[...rows]
+      .sort((a,b)=>{
+        const score=r=>expired.includes(r)?3:completed.includes(r)?2:pct(r.progress_percent)>0?0:1;
+        return score(a)-score(b);
+      }).slice(0,6).map(r=>{
+        const n=pct(r.progress_percent);
+        const isExpired=expired.includes(r);
+        const isCompleted=completed.includes(r);
+        const label=isExpired?"Access Expired":isCompleted?"Completed":n>0?"In Progress":"Not Started";
+        const params=new URLSearchParams({product:"training-course-extension-30-days",course:r.course.id,enrollment:r.id});
+        const url=isExpired?"lms-checkout.html?"+params.toString():
+          isCompleted?"lms-certificates.html":
+          "lms-course-player.html?course="+encodeURIComponent(r.course.id)+"&enrollment="+encodeURIComponent(r.id);
+        const action=isExpired?"Extend Access":isCompleted?"View Certificates":n>0?"Continue Course":"Start Course";
+        return '<article class="wt-course-tile'+(isCompleted?' is-complete':'')+'">'+
+          '<img class="wt-course-image" src="'+imageFor(r)+'" loading="lazy" alt="">'+
+          '<div class="wt-course-body"><h3 class="wt-course-title">'+esc(r.course.title)+'</h3>'+
+          '<div class="wt-course-status"><span>'+esc(label)+'</span><strong>'+n+'%</strong></div>'+
+          '<div class="wt-progress-track" role="progressbar" aria-label="'+esc(r.course.title)+' progress" aria-valuenow="'+n+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+n+'%"></span></div>'+
+          (r.expires_at?'<small style="font-size:11px;color:#63768a">Access until '+esc(fmtDate(r.expires_at))+'</small>':'')+
+          '<a class="wt-course-action" href="'+url+'">'+action+' →</a></div></article>';
+      }).join("");
+    const recent=lessonProgress.filter(r=>r.lesson?.title).slice(0,5).map(r=>{
+      const status=r.completed_at?"Completed":pct(r.progress_percent)+"% progress";
+      return '<div class="activity-row"><div><strong>'+esc(r.lesson.title)+'</strong><small>'+esc(status)+(r.last_activity_at?' · '+esc(fmtDate(r.last_activity_at)):'')+'</small></div></div>';
     }).join("");
-
-    const courseRows = [...rows].sort((a,b) => Number(b.course.slug === "dot-specimen-collector-training") - Number(a.course.slug === "dot-specimen-collector-training")).slice(0, 8).map(r => {
-      const progress = pct(r.progress_percent);
-      const accessExpired = r.status === "expired" || (r.expires_at && new Date(r.expires_at).getTime() <= Date.now());
-      const status = accessExpired ? "Access Expired" : r.status === "completed" || progress >= 100 ? "Completed" : progress > 0 ? "In Progress" : "Not Started";
-      const params = new URLSearchParams({product:"training-course-extension-30-days",course:r.course.id,enrollment:r.id});
-      const actionHref = accessExpired ? "lms-checkout.html?" + params.toString() : `lms-course-player.html?course=${encodeURIComponent(r.course.id)}&enrollment=${encodeURIComponent(r.id)}`;
-      return `<tr><td><strong>${esc(r.course.title)}</strong>${r.course.short_description ? `<small>${esc(r.course.short_description)}</small>` : ""}</td><td>${progress}%</td><td>${badge(status)}</td><td>${r.last_activity_at ? esc(fmtDate(r.last_activity_at)) : ""}</td><td><a class="snapshot-link" href="${actionHref}">${accessExpired?"Extend Access · $115":"Open"}</a></td></tr>`;
-    }).join("");
-
-    const activity = lessonProgress.filter(r => r.lesson?.title).slice(0, 8).map(r => `<div class="activity-row"><span class="activity-type">${r.completed_at ? "Completed" : "Progress"}</span><div><strong>${esc(r.lesson.title)}</strong>${r.last_activity_at ? `<small>${esc(fmtDate(r.last_activity_at))}</small>` : ""}</div>${badge(r.completed_at ? "Completed" : `${pct(r.progress_percent)}%`)}</div>`).join("");
-
-    const newestCert = certificates.slice().sort((a,b) => new Date(b.issued_at || 0) - new Date(a.issued_at || 0))[0];
-    const lastActivity = rows.find(r => r.last_activity_at)?.last_activity_at || lessonProgress.find(r => r.last_activity_at)?.last_activity_at;
-    const planChips = [
-      rows.length ? `${rows.length} Enrollments` : "",
-      active.length ? `${active.length} Active` : "",
-      completed.length ? `${completed.length} Completed` : "",
-      certificates.length ? `${certificates.length} Certificates` : ""
-    ].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("");
-
-    document.getElementById("content").innerHTML = `
-      <div class="metrics snapshot-metrics">${metrics.map(x => metric(...x)).join("")}</div>
-      <div class="section snapshot-grid">
-        <div class="panel"${attention ? "" : ' hidden'}><div class="panel-head"><div><h2>Continue Learning</h2><p>Active courses that still require completion.</p></div><a class="snapshot-link" href="lms-my-courses.html">My Courses</a></div><div class="snapshot-attention">${attention}</div></div>
-        <div class="panel"><div class="panel-head"><div><h2>Learning Snapshot</h2><p>Your current Workforce Training by screenings4u activity.</p></div></div><div class="snapshot-plan"><strong>${rows.length ? "Workforce Training by screenings4u Account" : ""}</strong>${lastActivity ? `<span>Last activity ${esc(fmtDate(lastActivity))}</span>` : ""}<div class="plan-chips">${planChips}</div>${newestCert?.issued_at ? `<span style="margin-top:12px">Latest certificate ${esc(fmtDate(newestCert.issued_at))}</span>` : ""}</div></div>
-      </div>
-      <div class="section"${courseRows ? "" : ' hidden'}><div class="panel"><div class="panel-head"><div><h2>My Courses</h2><p>Your current and previous training, including expired enrollments.</p></div><a class="snapshot-link" href="lms-my-courses.html">View All Courses</a></div><div class="table-wrap"><table><thead><tr><th>Course</th><th>Progress</th><th>Status</th><th>Last Activity</th><th></th></tr></thead><tbody>${courseRows}</tbody></table></div></div></div>
-      <div class="section snapshot-grid">
-        <div class="panel"${activity ? "" : ' hidden'}><div class="panel-head"><div><h2>Recent Activity</h2><p>Latest lesson progress and completions.</p></div></div><div class="activity-list">${activity}</div></div>
-        <div class="panel"><div class="panel-head"><div><h2>Learning Tools</h2><p>Training records and learner services.</p></div></div><div class="snapshot-attention"><a class="attention-row" href="lms-progress.html"><div><strong>Progress Report</strong><span>Review course completion history</span></div><span>→</span></a><a class="attention-row" href="lms-certificates.html"><div><strong>Certificate Center</strong><span>View earned certificates</span></div><span>→</span></a><a class="attention-row" href="lms-my-appointments.html"><div><strong>Appointments</strong><span>Manage scheduled training sessions</span></div><span>→</span></a></div></div>
-      </div>`;
+    const hero=document.querySelector(".app .hero");
+    if(hero){
+      hero.innerHTML='<span class="hero-kicker">LEARN · TRAIN · ACHIEVE</span>'+
+        '<h1>Welcome back to Workforce Training.</h1>'+
+        '<p>Continue your courses, review your progress, and access your training certificates in one place.</p>'+
+        '<div class="wt-command-hero-actions"><a href="lms-my-courses.html">Continue Training →</a><a href="lms-courses.html">Browse Courses</a></div>';
+    }
+    document.getElementById("content").classList.add("wt-command");
+    document.getElementById("content").innerHTML=
+      '<section class="wt-command-metrics">'+metrics.map(x=>metric(...x)).join("")+'</section>'+
+      '<div class="wt-command-columns"><div class="wt-command-left">'+
+      '<section class="panel"><div class="panel-head"><div><h2>My Courses</h2><p>Pick up where you left off and track completed training.</p></div><a class="snapshot-link" href="lms-my-courses.html">View All Courses →</a></div>'+
+      (courseTiles?'<div class="wt-course-cards">'+courseTiles+'</div>':'<p class="wt-empty">No courses are assigned to your account yet. Browse the available training catalog or contact support for enrollment assistance.</p>')+'</section>'+
+      '<section class="panel"><div class="panel-head"><div><h2>Recent Learning Activity</h2><p>Lessons recorded by your training account.</p></div><a class="snapshot-link" href="lms-progress.html">View Progress →</a></div>'+
+      (recent?'<div class="activity-list">'+recent+'</div>':'<p class="wt-empty">Learning activity appears here when you begin a course.</p>')+'</section>'+
+      '</div><aside class="wt-command-right">'+
+      '<section class="panel"><div class="panel-head"><h2>Learning Progress</h2></div>'+
+      '<div class="wt-progress-overview"><div class="wt-progress-ring" style="--percent:'+overall+'"><span>'+overall+'%</span></div>'+
+      '<div class="wt-progress-breakdown"><span>Completed <b>'+completed.length+'</b></span><span>In progress <b>'+inProgress.length+'</b></span><span>Not started <b>'+notStarted.length+'</b></span><span>Expired <b>'+expired.length+'</b></span></div></div>'+
+      '<a class="snapshot-link" href="lms-progress.html" style="display:block;text-align:center;margin-top:20px">View Detailed Progress →</a></section>'+
+      '<section class="panel"><div class="panel-head"><h2>Quick Actions</h2></div><div class="wt-quick-grid">'+
+      '<a href="lms-courses.html"><span aria-hidden="true">▦</span>Browse Courses</a>'+
+      '<a href="lms-certificates.html"><span aria-hidden="true">✧</span>My Certificates</a>'+
+      '<a href="lms-orders.html"><span aria-hidden="true">▤</span>Orders &amp; Receipts</a>'+
+      '<a href="lms-support.html"><span aria-hidden="true">?</span>Get Support</a>'+
+      '</div></section>'+
+      '<section class="panel"><div class="panel-head"><h2>More Training Tools</h2></div><div class="snapshot-attention">'+
+      '<a class="attention-row" href="lms-group-seats.html"><div><strong>Group Seats</strong><span>Manage eligible training assignments</span></div><span>→</span></a>'+
+      '<a class="attention-row" href="lms-my-appointments.html"><div><strong>Appointments</strong><span>View your upcoming scheduled sessions</span></div><span>→</span></a>'+
+      '<a class="attention-row" href="lms-documents.html"><div><strong>Documents</strong><span>Access training materials</span></div><span>→</span></a>'+
+      '</div></section></aside></div>';
   }
 
   async function init(){
