@@ -22,17 +22,69 @@
   let portalFontSize=applyFontSize(readFontSize());
 
   function renderShell(){
-    const links=navItems.map(([href,label,icon],i)=>`<a href="${href}"${i===7?' class="active" aria-current="page"':""}><span class="ico">${icon}</span><span>${esc(label)}</span></a>`).join("");
-    document.getElementById("trainingPortalApp").innerHTML=`<div class="app"><aside class="side" id="side"><div class="brand"><img src="images/training-logo.png" alt="screenings4u Learning Center"></div><nav class="nav"><div class="nav-title">SCREENINGS4U LEARNING CENTER</div>${links}</nav><div class="side-foot"><div style="font-size:.5625rem;color:#9fb3c7">Portal</div><div style="font-size:.6875rem;font-weight:800;color:#fff;margin-top:3px">lms.screenings4u.com</div></div></aside><main class="main"><header class="top"><div class="top-left"><button class="menu" id="menu" type="button" aria-label="Open navigation"><span>☰</span></button><span class="crumb">Group Seats</span></div><div class="top-right"><div class="font-sizer"><button id="fontDown" type="button">A−</button><button id="fontSizeValue" class="font-reset" type="button">Default</button><button id="fontUp" type="button">A+</button></div><span class="pill" id="portalClock"></span><button class="signout" id="logout" type="button">Sign Out</button></div></header><div class="content"><section class="hero"><div class="hero-kicker">LEARNER MANAGEMENT</div><h1>Group Training Seats</h1><p>Assign and manage learner seats from group training purchases tied to your Learning Center account.</p></section><section class="section" id="content"><div class="loading-msg">Loading group seat purchases…</div></section></div></main></div>`;
+    const links = navItems.map(([href,label,icon]) => `<a href="${href}"${href === "lms-group-seats.html" ? ' class="active" aria-current="page"' : ""}><span class="ico">${icon}</span><span>${esc(label)}</span></a>`).join("");
+    document.getElementById("trainingPortalApp").innerHTML = `
+      <div class="app">
+        <aside class="side" id="side">
+          <div class="brand"><img src="images/logo2.png" alt="Workforce Training by screenings4u"></div>
+          <nav class="nav"><div class="nav-title">Workforce Training by screenings4u</div>${links}</nav>
+          <div class="side-foot"><div style="font-size:.5625rem;color:#9fb3c7">Portal</div><div style="font-size:.6875rem;font-weight:800;color:#fff;margin-top:3px">lms.screenings4u.com</div></div>
+        </aside>
+        <main class="main">
+          <header class="top">
+            <div class="top-left">
+              <button class="menu" id="menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNav"><span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span></button>
+              <div class="top-context"><span class="top-eyebrow">Workforce Training by screenings4u</span><span class="crumb">Group Seats</span></div>
+            </div>
+            <div class="top-right">
+              <div class="top-utility-group top-time-group"><div class="portal-clock" aria-label="Current date and time"><span id="portalClockDate" class="portal-clock-date"></span><strong id="portalClockTime" class="portal-clock-time"></strong></div></div>
+              <div class="top-utility-group top-accessibility-group"><span class="top-utility-label">Text size</span><div class="font-sizer" role="group" aria-label="Page font size"><button type="button" id="fontDown" aria-label="Decrease font size">A−</button><button type="button" class="font-reset" id="fontSizeValue" aria-label="Reset font size">Default</button><button type="button" id="fontUp" aria-label="Increase font size">A+</button></div></div>
+              <div class="top-utility-group top-action-group"><span class="pill">LEARNER</span><a class="top-support" href="lms-support.html">Support</a><button class="signout" id="logout" type="button">Sign out</button></div>
+            </div>
+          </header>
+          <section class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Portal navigation"><div class="mobile-nav-inner"><div class="mobile-nav-head"><div><span>Portal navigation</span><strong>Workforce Training by screenings4u</strong></div><span class="mobile-nav-current">Group Seats</span></div><nav class="mobile-nav-links">${links}</nav><div class="mobile-nav-foot"><span>lms.screenings4u.com</span><small>Select a page to close this menu.</small></div></div></section>
+          <div class="content">
+            <section class="hero"><span class="hero-kicker">Workforce Training by screenings4u</span><h1>Group Training Seats</h1><p>Assign and manage learner seats from your group training purchases.</p><div class="hero-actions"><a class="btn primary" href="https://training.screenings4u.com/group-training.html">Explore Group Training</a></div></section>
+            <section class="section" id="content"><div class="loading-msg">Loading appointments…</div></section>
+          </div>
+        </main>
+      </div>`;
   }
+
+  function startClock(){
+    const update = () => {
+      const now = new Date();
+      document.getElementById("portalClockDate").textContent = new Intl.DateTimeFormat("en-US", {weekday:"short", month:"short", day:"numeric", year:"numeric"}).format(now);
+      document.getElementById("portalClockTime").textContent = new Intl.DateTimeFormat("en-US", {hour:"numeric", minute:"2-digit", second:"2-digit", hour12:true}).format(now);
+    };
+    update();
+    window.__s4uLmsGroupSeatsClock = setInterval(update, 1000);
+  }
+
   function bindShell(){
-    document.getElementById("fontDown")?.addEventListener("click",()=>portalFontSize=applyFontSize(portalFontSize-1));
-    document.getElementById("fontUp")?.addEventListener("click",()=>portalFontSize=applyFontSize(portalFontSize+1));
-    document.getElementById("fontSizeValue")?.addEventListener("click",()=>portalFontSize=applyFontSize(FONT_DEFAULT));
-    document.getElementById("menu")?.addEventListener("click",()=>document.getElementById("side")?.classList.toggle("open"));
-    document.getElementById("logout")?.addEventListener("click",async()=>{await db.auth.signOut();location.replace("https://lms.screenings4u.com/training-login.html")});
+    document.getElementById("fontDown")?.addEventListener("click", () => { portalFontSize = applyFontSize(portalFontSize - 1); });
+    document.getElementById("fontUp")?.addEventListener("click", () => { portalFontSize = applyFontSize(portalFontSize + 1); });
+    document.getElementById("fontSizeValue")?.addEventListener("click", () => { portalFontSize = applyFontSize(FONT_DEFAULT); });
+    const menu = document.getElementById("menu");
+    const mobile = document.getElementById("mobileNav");
+    menu?.addEventListener("click", () => {
+      const open = !mobile.classList.contains("open");
+      mobile.classList.toggle("open", open);
+      document.body.classList.toggle("mobile-nav-open", open);
+      menu.setAttribute("aria-expanded", String(open));
+      mobile.setAttribute("aria-hidden", String(!open));
+    });
+    mobile?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      mobile.classList.remove("open");
+      document.body.classList.remove("mobile-nav-open");
+      menu?.setAttribute("aria-expanded", "false");
+      mobile.setAttribute("aria-hidden", "true");
+    }));
+    document.getElementById("logout")?.addEventListener("click", async () => {
+      await db.auth.signOut();
+      window.location.replace("https://lms.screenings4u.com/training-login.html");
+    });
   }
-  function startClock(){const el=document.getElementById("portalClock");const tick=()=>{if(el)el.textContent=new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"2-digit"}).format(new Date())};tick();setInterval(tick,60000)}
 
   async function call(body){
     const {data,error}=await db.functions.invoke("lms-group-seat-actions",{body});
@@ -57,7 +109,7 @@
     const totalAssigned=purchases.reduce((n,p)=>n+Number(p.seats_used||0),0);
     const totalAvailable=purchases.reduce((n,p)=>n+Math.max(0,Number(p.seats_available??(Number(p.seats_purchased||0)-Number(p.seats_used||0)))),0);
     const activePackages=purchases.filter(p=>p.status==="active").length;
-    document.getElementById("content").innerHTML=`<div id="seatMessage" class="seat-message"></div><div class="metrics">${metric("Seat Packages",purchases.length,"Group purchases")}${metric("Seats Purchased",totalPurchased,"Total capacity")}${metric("Assigned Seats",totalAssigned,"Active assignments")}${metric("Available Seats",totalAvailable,`${activePackages} active package${activePackages===1?"":"s"}`)}</div><div class="section">${purchases.length?`<div class="group-grid">${purchases.map(purchaseCard).join("")}</div>`:'<div class="panel"><div class="empty">No group seat purchases are attached to this account.</div></div>'}</div>`;
+    document.getElementById("content").innerHTML=`<div id="seatMessage" class="seat-message"></div><section class="wt-seats-stats">${[["Seat Packages",purchases.length,"Group purchases","▦"],["Seats Purchased",totalPurchased,"Total capacity","◉"],["Assigned Seats",totalAssigned,"Learner assignments","✓"],["Available Seats",totalAvailable,`${activePackages} active package${activePackages===1?"":"s"}`,"♙"]].map(([label,value,detail,icon])=>`<article class="wt-seats-stat"><span class="wt-seats-stat-icon" aria-hidden="true">${icon}</span><div><small>${esc(label)}</small><strong>${esc(value)}</strong><span>${esc(detail)}</span></div></article>`).join("")}</section><section class="wt-seats-panel"><div class="wt-seats-panel-head"><div><h2>Group Training Packages</h2><p>Assign available seats and manage your learners from purchased packages.</p></div><span class="wt-seats-package-count">${purchases.length} package${purchases.length===1?"":"s"}</span></div>${purchases.length?`<div class="group-grid">${purchases.map(purchaseCard).join("")}</div>`:`<div class="wt-seats-empty"><div class="wt-seats-empty-icon" aria-hidden="true">♙</div><h3>No group training packages yet</h3><p>Once you purchase group training seats, your packages and learner assignments will appear here.</p><a class="wt-seats-cta" href="https://training.screenings4u.com/group-training.html">Explore Group Training →</a></div>`}</section><div class="wt-seats-help"><div><h2>Need help managing learner seats?</h2><p>Our training support team can help with assignments and group training access.</p></div><a href="lms-support.html" class="wt-seats-cta outline">Contact Support →</a></div>`;
     document.querySelectorAll("[data-assign]").forEach(form=>form.addEventListener("submit",assignSeat));
     document.querySelectorAll("[data-revoke]").forEach(btn=>btn.addEventListener("click",revokeSeat));
   }
