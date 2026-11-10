@@ -716,3 +716,83 @@ body[data-portal-page="progress"] .wt-prog-empty{padding:20px!important;color:#6
  body[data-portal-page="progress"] .wt-prog-activity-icon{width:30px;height:30px}
  body[data-portal-page="progress"] .wt-prog-event-tag{grid-column:2;justify-self:start}
 }
+
+/* Certificates — Workforce Training Concept 3. */
+body[data-portal-page="certificates"] .app .content{padding-top:16px!important}
+body[data-portal-page="certificates"] .app .hero{
+ min-height:118px!important;margin:0 0 13px!important;padding:19px 30px 18px 59px!important;
+ display:flex!important;flex-direction:column!important;justify-content:center!important;
+ background:linear-gradient(104deg,rgba(0,21,51,.98),rgba(2,37,80,.96) 56%,rgba(2,40,79,.60) 100%),url("../images/group-hero.png") right center/auto 150% no-repeat!important;
+}
+body[data-portal-page="certificates"] .app .hero::before{content:"";position:absolute;left:28px;top:22px;bottom:22px;width:5px;border-radius:5px;background:#ffa700}
+body[data-portal-page="certificates"] .app .hero .hero-kicker{color:#ffbd32!important;font-size:10px!important}
+body[data-portal-page="certificates"] .app .hero h1{font-size:clamp(28px,2.8vw,39px)!important;margin:4px 0 7px!important}
+body[data-portal-page="certificates"] .app .hero p{max-width:850px!important;font-size:13px!important}
+body[data-portal-page="certificates"] #content.wt-certificates{margin-top:0!important}
+body[data-portal-page="certificates"] .wt-certificates *{box-sizing:border-box}
+body[data-portal-page="certificates"] .wt-cert-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:14px}
+body[data-portal-page="certificates"] .wt-cert-stat{display:flex;align-items:center;gap:13px;min-height:96px;min-width:0;background:#fff;border:1px solid #d6e2f0;border-radius:14px;padding:15px;box-shadow:0 7px 19px #0015330b}
+body[data-portal-page="certificates"] .wt-cert-stat-icon{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;border-radius:50%;background:#eaf3ff;color:#0059c4;font-size:24px;font-weight:900}
+body[data-portal-page="certificates"] .wt-cert-stat:nth-child(2) .wt-cert-stat-icon{color:#128447;background:#e8f7ed}
+body[data-portal-page="certificates"] .wt-cert-stat:nth-child(3) .wt-cert-stat-icon{color:#d99200;background:#fff4df}
+body[data-portal-page="certificates"] .wt-cert-stat:nth-child(4) .wt-cert-stat-icon{color:#9f4050;background:#feedef}
+body[data-portal-page="certificates"] .wt-cert-stat>div{min-width:0}
+body[data-portal-page="certificates"] .wt-cert-stat small{display:block;color:#334b6b;font-size:11px;line-height:1.35;font-weight:800}
+body[data-portal-page="certificates"] .wt-cert-stat strong{display:block;color:#001533;font-size:27px;line-height:1.2;font-weight:900;margin:2px 0}
+body[data-portal-page="certificates"] .wt-cert-stat div>span{display:block;color:#637993;font-size:10px;line-height:1.4}
+body[data-portal-page="certificates"] .wt-cert-main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.85fr);align-items:stretch;gap:14px}
+body[data-portal-page="certificates"] .wt-cert-panel{min-width:0;background:#fff;border:1px solid #d6e2f0;border-radius:15px;overflow:hidden;box-shadow:0 7px 21px #0015330c}
+body[data-portal-page="certificates"] .wt-cert-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid #e7eef6}
+body[data-portal-page="certificates"] .wt-cert-panel-head h2{margin:0;color:#001533;font-size:19px;font-weight:900;line-height:1.25}
+body[data-portal-page="certificates"] .wt-cert-panel-head p{margin:5px 0 0;font-size:11px;color:#657a94;line-height:1.5}
+body[data-portal-page="certificates"] .wt-cert-count{display:inline-flex;background:#eef5ff;color:#0059c4;border-radius:99px;padding:6px 10px;font-size:10px;font-weight:850;white-space:nowrap}
+body[data-portal-page="certificates"] .wt-cert-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:35px 20px 38px;min-height:258px;text-align:center}
+body[data-portal-page="certificates"] .wt-cert-empty-icon{display:grid;place-items:center;width:66px;height:66px;border-radius:50%;background:#eef5ff;color:#0059c4;font-size:37px}
+body[data-portal-page="certificates"] .wt-cert-empty h3{margin:14px 0 5px;color:#001533;font-size:17px;font-weight:850}
+body[data-portal-page="certificates"] .wt-cert-empty p{margin:0 0 16px;max-width:350px;font-size:12px;line-height:1.6;color:#647992}
+body[data-portal-page="certificates"] .wt-cert-button{display:inline-flex;justify-content:center;align-items:center;padding:10px 15px;min-height:36px;border-radius:8px;border:1px solid #e8a600;background:linear-gradient(#ffd05a,#ffb31f);color:#001533!important;font-size:11px;font-weight:850;text-decoration:none;cursor:pointer;white-space:nowrap}
+body[data-portal-page="certificates"] .wt-cert-button:hover{filter:brightness(.97);text-decoration:none}
+body[data-portal-page="certificates"] .wt-cert-summary-top{display:flex;align-items:center;justify-content:center;gap:22px;padding:26px 19px 18px}
+body[data-portal-page="certificates"] .wt-cert-ring{--complete:0;display:grid;place-items:center;flex:0 0 122px;width:122px;height:122px;border-radius:50%;background:conic-gradient(#ffa700 calc(var(--complete)*1%),#e2e9f1 0)}
+body[data-portal-page="certificates"] .wt-cert-ring>div{display:flex;align-items:center;justify-content:center;flex-direction:column;width:91px;height:91px;border-radius:50%;background:#fff}
+body[data-portal-page="certificates"] .wt-cert-ring strong{font-size:27px;line-height:1.3;color:#001533;font-weight:900}
+body[data-portal-page="certificates"] .wt-cert-ring span{font-size:11px;color:#647992}
+body[data-portal-page="certificates"] .wt-cert-summary-totals{display:grid;gap:13px;min-width:160px}
+body[data-portal-page="certificates"] .wt-cert-summary-totals>div{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#536d87}
+body[data-portal-page="certificates"] .wt-cert-summary-totals b{font-weight:900;color:#001533}
+body[data-portal-page="certificates"] .wt-cert-summary-link{display:block;margin:3px 20px 17px;text-align:center;color:#0059c4;font-size:11px;font-weight:850;text-decoration:none}
+body[data-portal-page="certificates"] .wt-cert-next{border-top:1px solid #e7eef6;padding:14px 19px}
+body[data-portal-page="certificates"] .wt-cert-next h3{font-size:12px;color:#001533;margin:0 0 8px}
+body[data-portal-page="certificates"] .wt-cert-next a{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;font-weight:750;color:#244562;font-size:11px;text-decoration:none}
+body[data-portal-page="certificates"] .wt-cert-next a+a{border-top:1px solid #edf2f7}
+body[data-portal-page="certificates"] .wt-cert-next a span{color:#0059c4;font-size:15px}
+body[data-portal-page="certificates"] .wt-cert-items{display:grid;gap:0}
+body[data-portal-page="certificates"] .wt-cert-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:16px 19px;border-bottom:1px solid #e8eef5}
+body[data-portal-page="certificates"] .wt-cert-item:last-child{border-bottom:0}
+body[data-portal-page="certificates"] .wt-cert-item-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:12px;background:#edf4ff;color:#0059c4;font-size:23px}
+body[data-portal-page="certificates"] .wt-cert-item h3{margin:0;color:#001533;font-size:12px;font-weight:850;line-height:1.4}
+body[data-portal-page="certificates"] .wt-cert-item p{margin:4px 0;color:#657b94;font-size:10px}
+body[data-portal-page="certificates"] .wt-cert-item-dates{display:flex;flex-wrap:wrap;gap:6px 13px;color:#657b94;font-size:10px}
+body[data-portal-page="certificates"] .wt-cert-status{padding:6px 10px;background:#e7f6ed;color:#14814a;border-radius:99px;font-size:10px;font-weight:850}
+body[data-portal-page="certificates"] .wt-cert-pending,body[data-portal-page="certificates"] .wt-cert-viewer{margin-top:14px}
+body[data-portal-page="certificates"] .wt-cert-pending-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 19px;border-bottom:1px solid #e8eef5}
+body[data-portal-page="certificates"] .wt-cert-pending-row:last-child{border-bottom:0}
+body[data-portal-page="certificates"] .wt-cert-pending-row strong{display:block;color:#001533;font-size:12px}
+body[data-portal-page="certificates"] .wt-cert-pending-row small{display:block;color:#657b94;font-size:10px;margin-top:4px}
+body[data-portal-page="certificates"] .wt-cert-pending-label{font-size:10px;font-weight:800;color:#986200;background:#fff0d2;border-radius:99px;padding:7px 10px}
+body[data-portal-page="certificates"] .wt-cert-viewer[hidden]{display:none!important}
+body[data-portal-page="certificates"] .wt-cert-viewer #certificateBody{padding:15px}
+@media(max-width:1150px){body[data-portal-page="certificates"] .wt-cert-main{grid-template-columns:1fr}body[data-portal-page="certificates"] .wt-cert-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){body[data-portal-page="certificates"] .wt-cert-item{grid-template-columns:44px minmax(0,1fr)}body[data-portal-page="certificates"] .wt-cert-item>.wt-cert-status{grid-column:2;justify-self:start}body[data-portal-page="certificates"] .wt-cert-item>.wt-cert-button{grid-column:2;justify-self:start}}
+@media(max-width:540px){body[data-portal-page="certificates"] .app .hero{min-height:136px!important;padding:21px 18px 21px 37px!important}body[data-portal-page="certificates"] .app .hero::before{left:18px}body[data-portal-page="certificates"] .wt-cert-stats{gap:8px}body[data-portal-page="certificates"] .wt-cert-stat{gap:9px;min-height:88px;padding:10px}body[data-portal-page="certificates"] .wt-cert-stat-icon{flex-basis:33px;width:33px;height:33px;font-size:17px}body[data-portal-page="certificates"] .wt-cert-stat strong{font-size:21px}body[data-portal-page="certificates"] .wt-cert-summary-top{flex-wrap:wrap}body[data-portal-page="certificates"] .wt-cert-panel-head{padding:15px;flex-wrap:wrap}}
+@media print{
+ body[data-portal-page="certificates"] .app .side,
+ body[data-portal-page="certificates"] .app .top,
+ body[data-portal-page="certificates"] .app .hero,
+ body[data-portal-page="certificates"] .wt-cert-stats,
+ body[data-portal-page="certificates"] .wt-cert-main,
+ body[data-portal-page="certificates"] .wt-cert-pending{display:none!important}
+ body[data-portal-page="certificates"] #certificateViewer{display:block!important;border:0!important;box-shadow:none!important;margin:0!important}
+ body[data-portal-page="certificates"] #certificateViewer .wt-cert-panel-head{display:none!important}
+ body[data-portal-page="certificates"] .app .main{width:100%!important;overflow:visible!important}
+}
