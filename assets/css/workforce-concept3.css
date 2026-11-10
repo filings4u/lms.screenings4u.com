@@ -881,3 +881,24 @@ body[data-portal-page="live-training"] .live-error-card{border-color:#d7e3f0!imp
  body[data-portal-page="live-training"] .empty-live-actions>*{width:100%!important}
  body[data-portal-page="live-training"] .empty-live-card{padding:26px 17px!important}
 }
+
+
+/* LMS-wide typography calibration (Nov 2026).
+   Normalize oversized headings, summary values and table text.
+   Page-specific components retain their own carefully tuned layouts. */
+body[data-portal-page] .app .top .crumb{font-size:16px!important;line-height:1.25!important}
+body[data-portal-page] .app .nav a{font-size:12px!important}
+body[data-portal-page] .app .hero h1{font-size:clamp(27px,2.5vw,34px)!important;letter-spacing:-.55px!important}
+body[data-portal-page] .app .hero p{font-size:12px!important;line-height:1.55!important}
+body[data-portal-page] .app .hero-kicker{font-size:10px!important}
+body[data-portal-page] .app .panel-head h2{font-size:18px!important;letter-spacing:-.2px!important}
+body[data-portal-page] .app .panel-head p{font-size:11px!important}
+body[data-portal-page] .app .metric strong{font-size:clamp(19px,1.9vw,25px)!important;line-height:1.25!important;overflow-wrap:anywhere!important}
+body[data-portal-page] .app .metric small{font-size:11px!important}
+body[data-portal-page] .app .metric span{font-size:10px!important}
+body[data-portal-page] .app table td{font-size:12px!important}
+body[data-portal-page] .app table th{font-size:10px!important}
+@media(max-width:620px){
+ body[data-portal-page] .app .hero h1{font-size:clamp(25px,7vw,31px)!important}
+ body[data-portal-page] .app .metric strong{font-size:20px!important}
+}
