@@ -181,3 +181,6 @@ body #wt-lms-legal a:hover{color:#0059c4!important;text-decoration:underline!imp
  body #wt-lms-legal{margin-top:24px!important;padding-top:16px!important;text-align:center!important}
  body #wt-lms-legal .wt-lms-legal-links{justify-content:center!important;gap:10px 16px!important}
 }
+
+/* LMS has no footer, copyright strip, or legal navigation. */
+#wt-lms-legal, .wt-lms-footer, footer.wt-lms-legal{display:none!important}
