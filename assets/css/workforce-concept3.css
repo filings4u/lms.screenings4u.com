@@ -612,3 +612,107 @@ body[data-portal-page="course-library"] .sr-only{position:absolute!important;wid
  body[data-portal-page="course-library"] .wt-lib-group{flex-wrap:wrap;padding:15px;gap:10px}
  body[data-portal-page="course-library"] .wt-lib-group .wt-lib-button{width:100%}
 }
+
+/* Progress page — same branded card system as the approved LMS mockups. */
+body[data-portal-page="progress"] .app .content{padding-top:16px!important}
+body[data-portal-page="progress"] .app .hero{
+ min-height:115px!important;margin:0 0 13px!important;padding:19px 28px 18px 58px!important;
+ display:flex!important;flex-direction:column!important;justify-content:center!important;
+ background:linear-gradient(105deg,rgba(0,21,51,.98),rgba(3,40,82,.96) 53%,rgba(4,39,77,.60) 100%),url("../images/group-hero.png") right center/auto 150% no-repeat!important;
+}
+body[data-portal-page="progress"] .app .hero::before{content:"";position:absolute;left:27px;top:20px;bottom:20px;width:5px;background:#ffa700;border-radius:5px}
+body[data-portal-page="progress"] .app .hero .hero-kicker{color:#ffbe32!important;font-size:10px!important}
+body[data-portal-page="progress"] .app .hero h1{font-size:clamp(28px,2.8vw,39px)!important;margin:4px 0 8px!important}
+body[data-portal-page="progress"] .app .hero p{max-width:850px!important;font-size:13px!important}
+body[data-portal-page="progress"] #content.wt-progress{margin-top:0!important}
+body[data-portal-page="progress"] .wt-progress *{box-sizing:border-box}
+body[data-portal-page="progress"] .wt-prog-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}
+body[data-portal-page="progress"] .wt-prog-stat{display:flex;align-items:center;gap:13px;min-width:0;min-height:88px;padding:14px 15px;border:1px solid #d6e2f0;border-radius:14px;background:#fff;box-shadow:0 7px 18px #0015330c}
+body[data-portal-page="progress"] .wt-prog-stat-icon{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;border-radius:50%;font-size:24px;font-weight:900;color:#0059c4;background:#eaf3ff}
+body[data-portal-page="progress"] .wt-prog-stat:nth-child(2) .wt-prog-stat-icon{background:#fff3dc;color:#e79900}
+body[data-portal-page="progress"] .wt-prog-stat:nth-child(3) .wt-prog-stat-icon{background:#e6f7ec;color:#168447}
+body[data-portal-page="progress"] .wt-prog-stat small{display:block;font-weight:800;color:#334e6f;font-size:11px}
+body[data-portal-page="progress"] .wt-prog-stat strong{display:block;font-size:26px;line-height:1.2;color:#001533;font-weight:900;margin:2px 0}
+body[data-portal-page="progress"] .wt-prog-stat div>span{display:block;font-size:10px;color:#617790}
+body[data-portal-page="progress"] .wt-prog-minis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:13px}
+body[data-portal-page="progress"] .wt-prog-mini{display:flex;align-items:center;gap:10px;min-width:0;padding:10px 14px;border-radius:11px;border:1px solid #d9e5f1;background:#fff}
+body[data-portal-page="progress"] .wt-prog-mini b{color:#0059c4;font-size:20px;font-weight:900}
+body[data-portal-page="progress"] .wt-prog-mini span{font-size:10px;font-weight:750;line-height:1.3;color:#536b85}
+body[data-portal-page="progress"] .wt-prog-panel{border:1px solid #d6e2f0;border-radius:14px;background:#fff;box-shadow:0 7px 20px #0015330b;overflow:hidden;min-width:0}
+body[data-portal-page="progress"] .wt-prog-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 17px;border-bottom:1px solid #e8eef5}
+body[data-portal-page="progress"] .wt-prog-heading h2{margin:0!important;color:#001533;font-size:18px!important;font-weight:900}
+body[data-portal-page="progress"] .wt-prog-heading p{margin:4px 0 0;color:#667b94;font-size:11px}
+body[data-portal-page="progress"] .wt-prog-heading a{font-size:11px;font-weight:850;color:#0059c4;text-decoration:none}
+body[data-portal-page="progress"] .wt-prog-course-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:13px}
+body[data-portal-page="progress"] .wt-prog-course{display:grid;grid-template-columns:100px minmax(0,1fr);gap:11px;min-width:0;padding:9px;border-radius:12px;border:1px solid #dbe5f1;box-shadow:0 5px 12px #0015330c}
+body[data-portal-page="progress"] .wt-prog-course>img{display:block;width:100px;height:108px;object-fit:cover;border-radius:9px}
+body[data-portal-page="progress"] .wt-prog-course-copy{min-width:0;display:flex;flex-direction:column;gap:7px}
+body[data-portal-page="progress"] .wt-prog-course h3{font-size:12px;font-weight:850;line-height:1.3;margin:0;color:#001533}
+body[data-portal-page="progress"] .wt-prog-progress{display:flex;align-items:center;gap:8px;margin-top:auto}
+body[data-portal-page="progress"] .wt-prog-progress b{font-size:11px;min-width:26px;text-align:right}
+body[data-portal-page="progress"] .wt-prog-track{flex:1;min-width:25px;height:8px;display:block;border-radius:9px;background:#e0e8f2;overflow:hidden}
+body[data-portal-page="progress"] .wt-prog-track>span{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#ffce44,#efa600)}
+body[data-portal-page="progress"] .wt-prog-course-foot{display:flex;align-items:center;justify-content:space-between;gap:6px}
+body[data-portal-page="progress"] .wt-prog-course-foot small{font-size:9px;line-height:1.3;color:#5a718c}
+body[data-portal-page="progress"] .wt-prog-button{display:inline-flex;align-items:center;justify-content:center;min-height:29px;padding:6px 10px;border-radius:7px;background:#ffbb28;color:#001533!important;font-size:10px;font-weight:850;text-decoration:none;white-space:nowrap}
+body[data-portal-page="progress"] .wt-prog-bottom-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:13px;margin-top:13px}
+body[data-portal-page="progress"] .wt-prog-summary-content{display:flex;justify-content:center;align-items:center;gap:32px;padding:18px 24px}
+body[data-portal-page="progress"] .wt-prog-ring{--progress:0;flex:0 0 128px;width:128px;height:128px;display:grid;place-items:center;border-radius:50%;background:conic-gradient(#ffa700 calc(var(--progress)*1%),#e4eaf2 0)}
+body[data-portal-page="progress"] .wt-prog-ring>div{display:flex;align-items:center;justify-content:center;flex-direction:column;width:96px;height:96px;border-radius:50%;background:#fff}
+body[data-portal-page="progress"] .wt-prog-ring strong{font-size:26px;font-weight:900;color:#001533}
+body[data-portal-page="progress"] .wt-prog-ring span{font-size:10px;color:#607790}
+body[data-portal-page="progress"] .wt-prog-summary-breakdown{display:grid;gap:10px;min-width:160px}
+body[data-portal-page="progress"] .wt-prog-summary-breakdown>div{display:flex;justify-content:space-between;gap:25px;font-size:12px;color:#526c85}
+body[data-portal-page="progress"] .wt-prog-summary-breakdown b{color:#001533;font-weight:900}
+body[data-portal-page="progress"] .wt-prog-records>a{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:13px 18px;border-bottom:1px solid #e8eef5;text-decoration:none}
+body[data-portal-page="progress"] .wt-prog-records>a:last-child{border-bottom:0}
+body[data-portal-page="progress"] .wt-prog-records>a span{color:#001533;font-size:12px;font-weight:850}
+body[data-portal-page="progress"] .wt-prog-records>a small{grid-column:1;color:#657b94;font-size:10px}
+body[data-portal-page="progress"] .wt-prog-records>a b{grid-column:2;grid-row:1/3;align-self:center;color:#0059c4}
+body[data-portal-page="progress"] .wt-prog-table-panel,body[data-portal-page="progress"] .wt-prog-activity{margin-top:13px}
+body[data-portal-page="progress"] .wt-prog-table-scroll{overflow-x:auto;width:100%;scrollbar-width:thin}
+body[data-portal-page="progress"] .wt-prog-table{width:100%!important;min-width:760px!important;border-collapse:collapse}
+body[data-portal-page="progress"] .wt-prog-table th{background:#f0f5fb!important;color:#354d6c!important;font-size:10px!important;padding:10px 14px!important}
+body[data-portal-page="progress"] .wt-prog-table td{padding:9px 14px!important;border-bottom:1px solid #e9eef5!important;font-size:11px!important;vertical-align:middle!important}
+body[data-portal-page="progress"] .wt-prog-table tbody tr:last-child td{border-bottom:0!important}
+body[data-portal-page="progress"] .wt-prog-table-course{display:grid;grid-template-columns:52px minmax(0,1fr);align-items:center;gap:10px}
+body[data-portal-page="progress"] .wt-prog-table-course img{width:52px;height:43px;object-fit:cover;border-radius:7px}
+body[data-portal-page="progress"] .wt-prog-table-course strong{font-size:11px;line-height:1.35;color:#001533}
+body[data-portal-page="progress"] .wt-prog-table-progress{display:flex;align-items:center;gap:8px;min-width:110px}
+body[data-portal-page="progress"] .wt-prog-table-progress strong{font-size:11px;min-width:29px}
+body[data-portal-page="progress"] .wt-prog-table-progress .wt-prog-track{height:7px}
+body[data-portal-page="progress"] .wt-prog-status{display:inline-block;padding:5px 9px;border-radius:99px;font-size:10px;font-weight:850;background:#e5ecf4;color:#365172;white-space:nowrap}
+body[data-portal-page="progress"] .wt-prog-status.in-progress{background:#fff0cf;color:#975600}
+body[data-portal-page="progress"] .wt-prog-status.completed{background:#e3f6e9;color:#147b44}
+body[data-portal-page="progress"] .wt-prog-status.access-expired{background:#fde5e5;color:#a02f30}
+body[data-portal-page="progress"] .wt-prog-table-action{display:inline-flex;align-items:center;justify-content:center;padding:7px 11px;border-radius:7px;background:#ffbc30;color:#001533!important;font-size:10px;font-weight:850;text-decoration:none;white-space:nowrap}
+body[data-portal-page="progress"] .wt-prog-activity-list{display:grid;padding:0 16px 10px}
+body[data-portal-page="progress"] .wt-prog-activity-row{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #e8eef5}
+body[data-portal-page="progress"] .wt-prog-activity-row:last-child{border-bottom:0}
+body[data-portal-page="progress"] .wt-prog-activity-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#ebf3ff;color:#0059c4;font-weight:900}
+body[data-portal-page="progress"] .wt-prog-activity-icon.good{background:#e7f7ed;color:#14824c}
+body[data-portal-page="progress"] .wt-prog-activity-row strong{display:block;font-size:12px;color:#001533;line-height:1.4}
+body[data-portal-page="progress"] .wt-prog-activity-row small{display:block;font-size:10px;color:#607790;margin-top:3px}
+body[data-portal-page="progress"] .wt-prog-event-tag{padding:6px 10px;border-radius:99px;background:#edf3ff;color:#0059c4;font-size:10px;font-weight:850;white-space:nowrap}
+body[data-portal-page="progress"] .wt-prog-event-tag.good{background:#e8f7ef;color:#14824c}
+body[data-portal-page="progress"] .wt-prog-empty{padding:20px!important;color:#607790;font-size:12px!important}
+@media(max-width:1280px){body[data-portal-page="progress"] .wt-prog-course-grid{grid-template-columns:1fr}body[data-portal-page="progress"] .wt-prog-course>img{height:96px}}
+@media(max-width:1000px){body[data-portal-page="progress"] .wt-prog-stats{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-portal-page="progress"] .wt-prog-minis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:800px){body[data-portal-page="progress"] .wt-prog-bottom-grid{grid-template-columns:1fr}}
+@media(max-width:560px){
+ body[data-portal-page="progress"] .app .hero{padding:22px 19px 22px 37px!important;min-height:136px!important}
+ body[data-portal-page="progress"] .app .hero::before{left:18px}
+ body[data-portal-page="progress"] .wt-prog-stats{gap:8px}
+ body[data-portal-page="progress"] .wt-prog-stat{min-height:86px;padding:10px;gap:8px}
+ body[data-portal-page="progress"] .wt-prog-stat-icon{flex-basis:32px;width:32px;height:32px;font-size:16px}
+ body[data-portal-page="progress"] .wt-prog-stat strong{font-size:21px}
+ body[data-portal-page="progress"] .wt-prog-minis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ body[data-portal-page="progress"] .wt-prog-course{grid-template-columns:88px minmax(0,1fr);gap:8px}
+ body[data-portal-page="progress"] .wt-prog-course>img{width:88px;height:100%}
+ body[data-portal-page="progress"] .wt-prog-course-foot{flex-wrap:wrap}
+ body[data-portal-page="progress"] .wt-prog-summary-content{gap:20px;flex-wrap:wrap}
+ body[data-portal-page="progress"] .wt-prog-heading{padding:13px}
+ body[data-portal-page="progress"] .wt-prog-activity-row{grid-template-columns:32px minmax(0,1fr)}
+ body[data-portal-page="progress"] .wt-prog-activity-icon{width:30px;height:30px}
+ body[data-portal-page="progress"] .wt-prog-event-tag{grid-column:2;justify-self:start}
+}
