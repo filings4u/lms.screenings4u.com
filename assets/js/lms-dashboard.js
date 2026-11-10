@@ -66,7 +66,7 @@
     document.getElementById("trainingPortalApp").innerHTML = `
       <div class="app">
         <aside class="side" id="side">
-          <div class="brand"><img src="images/training-logo.png" alt="Workforce Training by screenings4u"></div>
+          <div class="brand"><img src="images/logo2.png" alt="Workforce Training by screenings4u"></div>
           <nav class="nav"><div class="nav-title">Workforce Training by screenings4u</div>${links}</nav>
           <div class="side-foot"><div style="font-size:.5625rem;color:#9fb3c7">Portal</div><div style="font-size:.6875rem;font-weight:800;color:#fff;margin-top:3px">lms.screenings4u.com</div></div>
         </aside>
