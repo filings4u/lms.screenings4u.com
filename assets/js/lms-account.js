@@ -18,8 +18,8 @@
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const metric=(label,value,sub,icon)=>`<article class="wt-account-metric"><span class="wt-account-metric-icon" aria-hidden="true">${icon}</span><div><small>${esc(label)}</small><strong>${esc(value)}</strong>${sub?`<span>${esc(sub)}</span>`:""}</div></article>`;
   const fmtDate=v=>{if(!v)return "";const d=new Date(v);return Number.isNaN(d.getTime())?"":new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}).format(d);};
-  const readFontSize=()=>{const n=Number(localStorage.getItem(FONT_KEY));return Number.isFinite(n)?Math.min(FONT_MAX,Math.max(FONT_MIN,n)):FONT_DEFAULT;};
-  function applyFontSize(n){const v=Math.min(FONT_MAX,Math.max(FONT_MIN,Number(n)||FONT_DEFAULT));document.documentElement.style.setProperty("--portal-font-root",v+"px");localStorage.setItem(FONT_KEY,String(v));const e=document.getElementById("fontSizeValue");if(e)e.textContent=v===FONT_DEFAULT?"Default":String(v);return v;}
+  const readFontSize=()=>{const saved=localStorage.getItem(FONT_KEY);const n=saved===null?FONT_DEFAULT:Number(saved);return Number.isFinite(n)?Math.min(FONT_MAX,Math.max(FONT_MIN,n)):FONT_DEFAULT;};
+  function applyFontSize(n){const v=Math.min(FONT_MAX,Math.max(FONT_MIN,Number(n)||FONT_DEFAULT));document.documentElement.style.setProperty("--portal-font-root",v+"px");document.documentElement.style.setProperty("--lms-text-scale",String(v/FONT_DEFAULT));localStorage.setItem(FONT_KEY,String(v));const e=document.getElementById("fontSizeValue");if(e)e.textContent=v===FONT_DEFAULT?"Default":String(v);return v;}
   let portalFontSize=applyFontSize(readFontSize());
 
   function renderShell(){
