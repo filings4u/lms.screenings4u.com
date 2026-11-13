@@ -301,6 +301,9 @@
 
   async function init(){
     renderShell();
+    // Always show the complete navigation from its first link on page entry.
+    const sidebarNav = document.querySelector(".app .side .nav");
+    if (sidebarNav) sidebarNav.scrollTop = 0;
     bindShell();
     startClock();
 
