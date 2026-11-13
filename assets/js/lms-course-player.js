@@ -57,6 +57,7 @@
     progress: new Map(),
     blockProgress: new Map(),
     blocksByLesson: new Map(),
+    loadedLessonIds: new Set(),
     mediaById: new Map(),
     quizzesByLesson: new Map(),
     assessmentsByLesson: new Map(),
@@ -113,9 +114,8 @@
     await loadEnrollment(courseId, enrollmentId);
     await loadCourse();
     await loadCurriculum();
-    // Lesson content and learner progress depend on the loaded curriculum,
-    // but not on each other. Fetch them concurrently to shorten first paint.
-    await Promise.all([loadLessonContent(), loadProgress()]);
+    // Start with learner progress; fetch content for the selected lesson only.
+    await loadProgress();
 
     if (lessonId) {
       var requested =
@@ -336,18 +336,10 @@
      LESSON CONTENT
      ============================================================ */
 
-  async function loadLessonContent() {
-    state.blocksByLesson = new Map();
-    state.mediaById = new Map();
-    state.quizzesByLesson = new Map();
-    state.assessmentsByLesson = new Map();
-
-    var lessonIds =
-      state.lessons.map(
-        function (lesson) {
-          return lesson.id;
-        }
-      );
+  async function loadLessonContent(requestedLessonIds) {
+    var lessonIds = (requestedLessonIds || []).filter(function(id) {
+      return id && !state.loadedLessonIds.has(id);
+    });
 
     if (!lessonIds.length) {
       return;
@@ -466,6 +458,7 @@
       ];
 
     if (!mediaIds.length) {
+      lessonIds.forEach(function(id){ state.loadedLessonIds.add(id); });
       return;
     }
 
@@ -494,6 +487,7 @@
             }
           )
       );
+    lessonIds.forEach(function(id){ state.loadedLessonIds.add(id); });
   }
 
 
@@ -897,6 +891,9 @@
         state.currentIndex
       ];
 
+       // Fetch the active lesson's blocks after access/progress is resolved.
+       await loadLessonContent([lesson.id]);
+
     if (!lesson) {
       return;
     }
@@ -1155,20 +1152,10 @@
     host.innerHTML =
       '<div class="course-player-runtime-loading">Loading lesson content...</div>';
 
-    var rendered = [];
-
-    for (
-      var index = 0;
-      index < blocks.length;
-      index += 1
-    ) {
-      rendered.push(
-        await renderBlock(
-          blocks[index],
-          lesson
-        )
-      );
-    }
+    // Independent block rendering resolves signed media in parallel.
+    var rendered = await Promise.all(blocks.map(function(block) {
+      return renderBlock(block, lesson);
+    }));
 
     host.innerHTML =
       rendered.join("");
