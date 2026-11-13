@@ -178,3 +178,49 @@ body[data-portal-page="orders"] .wt-orders-empty{text-align:center;padding:34px 
  body[data-portal-page="orders"] .orders-filter-grid input,
  body[data-portal-page="orders"] .orders-filter-grid select{font-size:14px;min-height:44px}
 }
+
+/* Orders desktop readability: keep the existing data/table structure. */
+body[data-portal-page="orders"] .wt-orders-metric small{
+ font-size:calc(12px * var(--lms-text-scale,1))!important;
+}
+body[data-portal-page="orders"] .wt-orders-metric strong{
+ font-size:clamp(20px,calc(26px * var(--lms-text-scale,1)),34px)!important;
+}
+body[data-portal-page="orders"] .wt-orders-metric div>span,
+body[data-portal-page="orders"] .wt-orders-history .panel-head p,
+body[data-portal-page="orders"] .wt-orders-panel .panel-head p{
+ font-size:calc(12px * var(--lms-text-scale,1))!important;
+}
+body[data-portal-page="orders"] .wt-orders-history .panel-head h2,
+body[data-portal-page="orders"] .wt-orders-panel .panel-head h2{
+ font-size:calc(19px * var(--lms-text-scale,1))!important;
+}
+body[data-portal-page="orders"] .orders-filter-label{
+ font-size:calc(11px * var(--lms-text-scale,1))!important;
+}
+body[data-portal-page="orders"] .orders-filter-grid input,
+body[data-portal-page="orders"] .orders-filter-grid select{
+ font-size:calc(14px * var(--lms-text-scale,1))!important;
+}
+body[data-portal-page="orders"] .orders-table th{
+ font-size:calc(11px * var(--lms-text-scale,1))!important;
+}
+body[data-portal-page="orders"] .orders-table td,
+body[data-portal-page="orders"] .orders-table td strong{
+ font-size:calc(13px * var(--lms-text-scale,1))!important;
+ line-height:1.45!important;
+}
+body[data-portal-page="orders"] .orders-table td small{
+ font-size:calc(11px * var(--lms-text-scale,1))!important;
+}
+body[data-portal-page="orders"] .orders-table .badge,
+body[data-portal-page="orders"] .orders-view-btn,
+body[data-portal-page="orders"] .wt-orders-history .panel-head .badge{
+ font-size:calc(12px * var(--lms-text-scale,1))!important;
+}
+body[data-portal-page="orders"] .orders-table{
+ min-width:900px!important;
+}
+@media(max-width:620px){
+ body[data-portal-page="orders"] .wt-orders-metric strong{font-size:calc(20px * var(--lms-text-scale,1))!important}
+}
