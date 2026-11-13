@@ -113,8 +113,9 @@
     await loadEnrollment(courseId, enrollmentId);
     await loadCourse();
     await loadCurriculum();
-    await loadLessonContent();
-    await loadProgress();
+    // Lesson content and learner progress depend on the loaded curriculum,
+    // but not on each other. Fetch them concurrently to shorten first paint.
+    await Promise.all([loadLessonContent(), loadProgress()]);
 
     if (lessonId) {
       var requested =
