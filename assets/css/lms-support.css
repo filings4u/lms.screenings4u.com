@@ -62,3 +62,10 @@ body[data-portal-page="support"] .support-form{gap:14px!important}
 body[data-portal-page="support"] .support-field label{color:#365472!important}
 @media(max-width:1120px){body[data-portal-page="support"] .wt-support-stats{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-portal-page="support"] .support-layout{grid-template-columns:1fr}body[data-portal-page="support"] .wt-support-conversation-empty{min-height:220px}}
 @media(max-width:600px){body[data-portal-page="support"] .app .hero{padding:22px 19px 22px 37px!important}body[data-portal-page="support"] .app .hero::before{left:18px}body[data-portal-page="support"] .wt-support-stats{gap:8px}body[data-portal-page="support"] .wt-support-stat{padding:10px;gap:8px;min-height:91px}body[data-portal-page="support"] .wt-support-stat-icon{flex-basis:32px;width:32px;height:32px;font-size:17px}body[data-portal-page="support"] .wt-support-stat strong{font-size:21px}body[data-portal-page="support"] .support-card-head{flex-direction:column;align-items:flex-start!important}body[data-portal-page="support"] .support-actions{width:100%}body[data-portal-page="support"] .support-actions .support-btn{flex:1}body[data-portal-page="support"] .support-reply-actions{flex-direction:column;align-items:stretch}body[data-portal-page="support"] .support-reply-actions button{width:100%}}
+
+/* Identify the enrolled learner in every support conversation header. */
+body[data-portal-page="support"] .support-thread-head .support-learner-name{
+ margin:7px 0 3px!important;font-size:13px!important;line-height:1.45!important;
+ color:#45617f!important;
+}
+body[data-portal-page="support"] .support-learner-name strong{color:#01122f;font-weight:850}
