@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  console.info("[LMS Notifications] build 20261110-lms-messages-only");
+  console.info("[LMS Notifications] build 20261112-inbox-redesign");
 
   const SUPABASE_URL = "https://elpbnytpciqnbexiaebp.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVscGJueXRwY2lxbmJleGlhZWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyOTYwMzQsImV4cCI6MjEwNTg3MjAzNH0.kWzPDxpdeorkJJpP6pvt4LCP-W9uGGVAgcQVVheVuE8";
@@ -125,49 +125,77 @@
     );
   }
   function render(){
+    // One entry per conversation, rather than one large repeating card per message.
+    // All messages remain accessible via the existing Support conversation route.
     const learner=messages.filter(row=>row.sender==="customer").length;
     const admin=messages.filter(row=>row.sender==="admin").length;
     const activeThreads=new Set(messages.map(row=>row.kind+":"+row.threadId)).size;
-    const latest=messages[0]?.at?fmtWhen(messages[0].at):"";
-    const visible=visibleRows();
-    const cards=visible.map(row=>{
+    const latest=messages[0]?.at?fmtWhen(messages[0].at):"—";
+    const filtered=visibleRows();
+    const byThread=new Map();
+    for(const row of filtered){
+      const key=row.kind+":"+row.threadId;
+      if(!byThread.has(key))byThread.set(key,{...row,count:0,adminCount:0});
+      const item=byThread.get(key);
+      item.count++;
+      if(row.sender==="admin")item.adminCount++;
+    }
+    const threads=Array.from(byThread.values()).sort((a,b)=>new Date(b.at||0)-new Date(a.at||0));
+    const summary=[
+      ["Conversations",activeThreads,"Training conversations","messages-square"],
+      ["From Training Staff",admin,"Staff responses","mail"],
+      ["Sent by You",learner,"Your messages","send"],
+      ["Latest Activity",latest,"Last message","clock"]
+    ];
+    const items=threads.map(row=>{
       const fromAdmin=row.sender==="admin";
-      const heading=fromAdmin?"Training Administrator":"You";
       const href="lms-support.html?ticket="+encodeURIComponent(row.threadId);
-      return '<article class="wt-notify-message '+(fromAdmin?"admin":"customer")+'">'+
-        '<span class="wt-notify-avatar" aria-hidden="true">'+(fromAdmin?"✉":"◉")+'</span>'+
-        '<div class="wt-notify-message-main"><div class="wt-notify-message-head"><div><span class="wt-notify-sender">'+heading+'</span>'+
-        '<h3>'+esc(row.subject)+'</h3></div><time>'+esc(fmtWhen(row.at))+'</time></div>'+
-        '<p>'+esc(row.body)+'</p><div class="wt-notify-message-meta"><span class="wt-notify-kind">'+(row.kind==="ticket"?"Support Ticket":"Training Message")+'</span>'+
-        (row.number?'<span>'+esc(row.number)+'</span>':"")+'</div></div>'+
-        '<a class="wt-notify-view" href="'+esc(href)+'">View Conversation →</a></article>';
+      return '<article class="wt-notify-thread '+(fromAdmin?"admin":"customer")+'">'+
+        '<div class="wt-notify-thread-icon" aria-hidden="true">'+(fromAdmin?"✉":"✎")+'</div>'+
+        '<div class="wt-notify-thread-main">'+
+          '<div class="wt-notify-thread-eyebrow"><span>'+(fromAdmin?"Training Team":"You")+'</span><span class="wt-notify-thread-dot" aria-hidden="true">·</span><span>'+(row.kind==="ticket"?"Support Conversation":"Training Message")+'</span></div>'+
+          '<h3><a href="'+esc(href)+'">'+esc(row.subject)+'</a></h3>'+
+          '<p>'+esc(row.body)+'</p>'+
+          '<div class="wt-notify-thread-meta"><time>'+esc(fmtWhen(row.at))+'</time>'+
+             (row.number?'<span class="wt-notify-reference">'+esc(row.number)+'</span>':"")+
+             '<span>'+itemCount(row.count)+' in this conversation</span></div>'+
+        '</div>'+
+        '<a class="wt-notify-thread-open" href="'+esc(href)+'" aria-label="Open '+esc(row.subject)+' conversation">Open Conversation <span aria-hidden="true">›</span></a>'+
+      '</article>';
     }).join("");
     document.getElementById("content").innerHTML=
-      '<section class="wt-notify-metrics">'+[
-        ["Conversations",activeThreads,"Support threads","▤"],
-        ["Administrator Replies",admin,"Messages from training staff","✉"],
-        ["Your Messages",learner,"Messages you sent","◉"],
-        ["Latest Message",latest||"—","Most recent exchange","◷"]
-      ].map(([name,value,sub,icon])=>'<article class="wt-notify-metric"><span class="wt-notify-metric-icon" aria-hidden="true">'+icon+'</span><div><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong><span>'+esc(sub)+'</span></div></article>').join("")+'</section>'+
-      '<section class="wt-notify-panel"><div class="wt-notify-panel-head"><div><h2>Training Messages</h2>'+
-      '<p>Messages exchanged between you and the Workforce Training support team.</p></div>'+
-      '<a class="wt-notify-primary" href="lms-support.html">Send a Message →</a></div>'+
-      '<div class="wt-notify-toolbar"><div class="wt-notify-filters" role="group" aria-label="Filter by sender">'+
-      ['all','admin','customer'].map(v=>'<button type="button" data-sender="'+v+'" aria-pressed="'+(currentSender===v)+'" class="'+(currentSender===v?"active":"")+'">'+({all:"All Messages",admin:"From Admin",customer:"From Me"}[v])+'</button>').join("")+
-      '</div><div class="wt-notify-toolbar-right"><label><span class="sr-only">Conversation type</span><select id="wtNotifyKind"><option value="all">All Conversations</option><option value="ticket">Support Tickets</option><option value="chat">Messages</option></select></label>'+
-      '<button type="button" class="wt-notify-refresh" id="refreshNotifications">Refresh</button></div></div>'+
-      '<div class="wt-notify-count" aria-live="polite">Showing '+visible.length+' of '+messages.length+' training messages</div>'+
-      (cards?'<div class="wt-notify-messages">'+cards+'</div>':
-        '<div class="wt-notify-empty"><span class="wt-notify-empty-icon" aria-hidden="true">✉</span><h3>No training messages yet</h3>'+
-        '<p>Only conversations between you and the Workforce Training team appear here. Work orders and notifications from other portals are excluded.</p>'+
-        '<a class="wt-notify-primary" href="lms-support.html">Contact Training Support →</a></div>')+
+      '<section class="wt-notify-overview" aria-label="Training message summary">'+summary.map(([name,value,sub,icon])=>
+        '<article class="wt-notify-stat"><span class="wt-notify-stat-icon" aria-hidden="true">'+({ "messages-square":"▤",mail:"✉",send:"↗",clock:"◷"}[icon])+'</span><div><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong><span>'+esc(sub)+'</span></div></article>'
+      ).join("")+'</section>'+
+      '<section class="wt-notify-inbox">'+
+        '<div class="wt-notify-inbox-head"><div><span class="wt-notify-section-kicker">WORKFORCE TRAINING</span><h2>Message Center</h2><p>All conversations between you and the training support team.</p></div>'+
+        '<a class="wt-notify-compose" href="lms-support.html">Send a Message <span aria-hidden="true">＋</span></a></div>'+
+        '<div class="wt-notify-controls">'+
+          '<div class="wt-notify-segments" role="group" aria-label="Filter messages by sender">'+
+          ['all','admin','customer'].map(v=>'<button type="button" data-sender="'+v+'" aria-pressed="'+(currentSender===v)+'" class="'+(currentSender===v?"active":"")+'">'+({all:"All Messages",admin:"From Training Staff",customer:"Sent by Me"}[v])+'</button>').join("")+
+          '</div><div class="wt-notify-control-end"><label class="wt-notify-search-label" for="wtNotifySearch">Search conversations</label><input id="wtNotifySearch" type="search" placeholder="Search messages" autocomplete="off"><label class="sr-only" for="wtNotifyKind">Conversation type</label><select id="wtNotifyKind"><option value="all">All Types</option><option value="ticket">Support Tickets</option><option value="chat">Training Messages</option></select><button type="button" id="refreshNotifications" class="wt-notify-refresh" aria-label="Refresh messages">Refresh</button></div></div>'+
+        '<div class="wt-notify-results" aria-live="polite">'+threads.length+' conversation'+(threads.length===1?"":"s")+'</div>'+
+        (items?'<div class="wt-notify-thread-list" id="wtNotifyThreadList">'+items+'</div>':
+          '<div class="wt-notify-empty"><span class="wt-notify-empty-icon">✉</span><h3>No conversations found</h3><p>Messages from Workforce Training will appear here. Change your filters or contact the training team.</p><a class="wt-notify-compose" href="lms-support.html">Contact Training Support</a></div>')+
       '</section>';
     const select=document.getElementById("wtNotifyKind");
     if(select)select.value=currentKind;
     document.querySelectorAll("[data-sender]").forEach(btn=>btn.addEventListener("click",()=>{currentSender=btn.dataset.sender;render()}));
-    select?.addEventListener("change",e=>{currentKind=e.target.value;render()});
+    select?.addEventListener("change",event=>{currentKind=event.target.value;render()});
     document.getElementById("refreshNotifications")?.addEventListener("click",()=>loadData().catch(showError));
+    const input=document.getElementById("wtNotifySearch");
+    input?.addEventListener("input",()=>{
+      const q=input.value.trim().toLowerCase();
+      let count=0;
+      document.querySelectorAll(".wt-notify-thread").forEach(node=>{
+        const match=!q||node.textContent.toLowerCase().includes(q);
+        node.hidden=!match;if(match)count++;
+      });
+      const result=document.querySelector(".wt-notify-results");
+      if(result)result.textContent=count+" conversation"+(count===1?"":"s");
+    });
   }
+  function itemCount(count){return count+" message"+(count===1?"":"s")}
   function showError(error){
     console.error("[LMS Training Messages]",error);
     const content=document.getElementById("content");
