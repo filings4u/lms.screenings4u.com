@@ -169,6 +169,16 @@
   }
 
   function boot() {
+    // One-time migration: the old missing-value bug saved 12px for users
+    // who had never selected a font size. Start them at the readable default.
+    try {
+      const migrationKey = "s4u_lms_font_default_fixed_v2";
+      if (localStorage.getItem(migrationKey) !== "1") {
+        const key = "s4u_lms_font_size";
+        if (localStorage.getItem(key) === "12") localStorage.setItem(key, "14");
+        localStorage.setItem(migrationKey, "1");
+      }
+    } catch (_) {}
     patchSupabaseFactory();
     wireViewCache();
     wirePrefetch();
