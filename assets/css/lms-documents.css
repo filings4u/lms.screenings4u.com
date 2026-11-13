@@ -3,7 +3,7 @@
 
 /* Workforce Training Documents — approved portal styling */
 body[data-portal-page="documents"] .app .content{padding-top:16px!important}
-body[data-portal-page="documents"] .app .hero{position:relative!important;min-height:132px!important;margin:0 0 15px!important;padding:23px 29px 23px 58px!important;border-radius:16px!important;background:linear-gradient(107deg,rgba(0,21,51,.98),rgba(5,39,80,.97) 58%,rgba(7,47,84,.64)),url("../images/group-hero.png") right center/auto 155% no-repeat!important}
+body[data-portal-page="documents"] .app .hero{position:relative!important;min-height:132px!important;margin:0 0 15px!important;padding:23px 29px 23px 58px!important;border-radius:16px!important;background:linear-gradient(107deg,#01122f 0%,#09284d 62%,#4e6e8f 100%)!important}
 body[data-portal-page="documents"] .app .hero::before{content:"";position:absolute;top:24px;bottom:24px;left:27px;width:5px;border-radius:5px;background:#ffa700}
 body[data-portal-page="documents"] .app .hero-kicker{font-size:10px!important;color:#ffbe30!important}
 body[data-portal-page="documents"] .app .hero h1{font-size:clamp(29px,2.8vw,39px)!important;margin:5px 0 7px!important}
