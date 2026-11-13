@@ -515,45 +515,19 @@
         }
       );
 
-    var result =
-      await state.db
-        .from(TABLES.lessonProgress)
-        .select("*")
-        .eq(
-          "enrollment_id",
-          state.enrollment.id
-        )
-        .in(
-          "lesson_id",
-          lessonIds
-        );
-
-    if (result.error) {
-      throw result.error;
-    }
-
-    state.progress =
-      new Map(
-        (result.data || [])
-          .map(
-            function (row) {
-              return [
-                row.lesson_id,
-                row
-              ];
-            }
-          )
-      );
-
-    var blockResult =
-      await state.db
-        .from(TABLES.blockProgress)
-        .select("*")
-        .eq("enrollment_id", state.enrollment.id);
-
-    if (blockResult.error) {
-      throw blockResult.error;
-    }
+    var results = await Promise.all([
+      state.db.from(TABLES.lessonProgress).select("*")
+        .eq("enrollment_id", state.enrollment.id).in("lesson_id", lessonIds),
+      state.db.from(TABLES.blockProgress).select("*")
+        .eq("enrollment_id", state.enrollment.id)
+    ]);
+    var result = results[0];
+    var blockResult = results[1];
+    if (result.error) throw result.error;
+    if (blockResult.error) throw blockResult.error;
+    state.progress = new Map((result.data || []).map(function (row) {
+      return [row.lesson_id, row];
+    }));
 
     state.blockProgress = new Map(
       (blockResult.data || []).map(function (row) {
