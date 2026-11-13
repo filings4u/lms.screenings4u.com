@@ -64,12 +64,16 @@
   }
 
   function pageCacheKey() {
-    return CACHE_PREFIX + location.pathname + location.search;
+    // A page snapshot must never be restored to a different signed-in learner.
+    const userId = readStoredSession()?.user?.id;
+    return userId ? CACHE_PREFIX + userId + ":" + location.pathname + location.search : null;
   }
 
   function loadCachedView() {
     try {
-      const saved = JSON.parse(sessionStorage.getItem(pageCacheKey()) || "null");
+      const key = pageCacheKey();
+      if (!key) return null;
+      const saved = JSON.parse(sessionStorage.getItem(key) || "null");
       if (!saved?.html || Date.now() - Number(saved.savedAt || 0) > CACHE_TTL) return null;
       return saved.html;
     } catch (_) {
@@ -111,7 +115,8 @@
           const text = (content.textContent || "").trim();
           if (html.length > 80 && !/loading|please wait|unable to load/i.test(text)) {
             try {
-              sessionStorage.setItem(pageCacheKey(), JSON.stringify({ html, savedAt: Date.now() }));
+              const key = pageCacheKey();
+              if (key) sessionStorage.setItem(key, JSON.stringify({ html, savedAt: Date.now() }));
             } catch (_) {}
           }
         }, 120);
