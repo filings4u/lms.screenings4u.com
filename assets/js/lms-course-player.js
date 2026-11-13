@@ -475,18 +475,11 @@
       throw mediaResult.error;
     }
 
-    state.mediaById =
-      new Map(
-        (mediaResult.data || [])
-          .map(
-            function (media) {
-              return [
-                media.id,
-                media
-              ];
-            }
-          )
-      );
+    // Merge media from the current lesson; do not discard media loaded
+    // for prior lessons when navigating back and forth.
+    (mediaResult.data || []).forEach(function (media) {
+      state.mediaById.set(media.id, media);
+    });
     lessonIds.forEach(function(id){ state.loadedLessonIds.add(id); });
   }
 
@@ -891,8 +884,6 @@
         state.currentIndex
       ];
 
-       // Fetch the active lesson's blocks after access/progress is resolved.
-       await loadLessonContent([lesson.id]);
 
     if (!lesson) {
       return;
@@ -983,6 +974,9 @@
         state.lessons[
           state.currentIndex
         ];
+
+      // Load the selected lesson before rendering its blocks.
+      await loadLessonContent([lesson.id]);
 
       var section =
         state.sections.find(
