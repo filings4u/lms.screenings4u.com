@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  console.info("[LMS Documents] build 20261110-redesign");
+  console.info("[LMS Documents] build 20261112-auth-recovery2");
 
   const SUPABASE_URL="https://elpbnytpciqnbexiaebp.supabase.co";
   const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVscGJueXRwY2lxbmJleGlhZWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyOTYwMzQsImV4cCI6MjEwNTg3MjAzNH0.kWzPDxpdeorkJJpP6pvt4LCP-W9uGGVAgcQVVheVuE8";
@@ -82,7 +82,22 @@
     });
   }
 
-  async function call(body){const {data,error}=await db.functions.invoke("lms-learner-documents",{body});if(error)throw error;if(data?.error)throw new Error(data.error);return data||{}}
+  function loginRedirect(){
+ const returnTo=encodeURIComponent(location.pathname+location.search);
+ location.replace("training-login.html?returnTo="+returnTo);
+}
+async function call(body){
+ const {data,error}=await db.functions.invoke("lms-learner-documents",{body});
+ if(error){
+  if(error?.context?.status===401){loginRedirect();throw new Error("Your session expired. Please sign in again.");}
+  throw error;
+ }
+ if(data?.error){
+  if(/authentication required|invalid jwt|expired jwt/i.test(String(data.error))){loginRedirect();throw new Error("Your session expired. Please sign in again.");}
+  throw new Error(data.error);
+ }
+ return data||{};
+}
   function docTitle(row){return row?.documents?.title||""}
   function docType(row){if(row.category==="mock_training")return"Mock Training";if(row.category==="onboarding_acknowledgment")return"Acknowledgment";return row.category?String(row.category).replace(/_/g," "):""}
   function renderSelected(){const el=document.getElementById("selectedFiles");if(!el)return;el.innerHTML=files.map(f=>`<div class="selected-file"><strong>${esc(f.name)}</strong><span>${esc(fmtBytes(f.size))}</span></div>`).join("")}
@@ -108,6 +123,20 @@
   async function openDoc(e){const btn=e.currentTarget;btn.disabled=true;try{const data=await call({action:"signed",id:btn.dataset.open});if(data.url)window.open(data.url,"_blank","noopener") }catch(err){setMessage(err?.message||"Unable to open document.",true)}finally{btn.disabled=false}}
   async function uploadFiles(e){e.preventDefault();const enrollmentId=document.getElementById("enrollmentSelect")?.value||"";const status=document.getElementById("uploadStatus"),btn=document.getElementById("uploadBtn");if(!enrollmentId){status.textContent="Select a training course.";status.className="upload-status bad";return}if(!files.length){status.textContent="Choose at least one file.";status.className="upload-status bad";return}btn.disabled=true;status.textContent="Uploading…";status.className="upload-status good";const submittedIds=[];let uploadError=null;try{for(const file of files){const prep=await call({action:"prepare_mock_upload",enrollmentId,file:{name:file.name,mimeType:file.type,size:file.size}});const up=await db.storage.from(prep.bucket).uploadToSignedUrl(prep.path,prep.token,file,{contentType:file.type});if(up.error)throw up.error;const saved=await call({action:"finalize_mock_upload",enrollmentId,path:prep.path,file:{name:file.name,mimeType:file.type,size:file.size}});if(saved.document?.id)submittedIds.push(saved.document.id)}}catch(err){uploadError=err}try{if(submittedIds.length){files=[];status.textContent="Documents saved. Sending email confirmations…";status.className="upload-status good";const notice=await call({action:"notify_upload",documentIds:submittedIds});await load();if(notice.studentEmailSent&&notice.managementEmailSent)setMessage("Documents uploaded. Confirmation emails sent to you and Workforce Training management.");else setMessage("Documents uploaded, but one or more notification emails could not be sent. The training team can still review your files.",true)}else if(uploadError){status.textContent=uploadError?.message||"Unable to upload document.";status.className="upload-status bad"}if(uploadError&&submittedIds.length){setMessage(submittedIds.length+" document(s) saved; another file failed to upload. You can submit the remaining files separately.",true)}}catch(err){if(submittedIds.length){await load();files=[];setMessage("Documents were saved, but email confirmation could not be verified. Your documents are available for review.",true)}else{status.textContent=err?.message||"Unable to send confirmation.";status.className="upload-status bad"}}finally{btn.disabled=false}}
   async function load(){const [d,e]=await Promise.all([call({action:"list"}),call({action:"enrollments"})]);docs=Array.isArray(d.documents)?d.documents:[];enrollments=Array.isArray(e.enrollments)?e.enrollments:[];render()}
-  async function init(){renderShell();bindShell();startClock();const {data,error}=await db.auth.getSession();if(error)throw error;if(!data?.session?.user?.id){location.replace("https://lms.screenings4u.com/training-login.html?returnTo=%2Flms-documents.html");return}try{await load()}catch(err){console.error("[LMS Documents]",err);document.getElementById("content").innerHTML=`<div class="panel"><div class="empty">${esc(err?.message||"Unable to load documents.")}</div></div>`}}
+  async function init(){
+ renderShell();bindShell();startClock();
+ try {
+  const {data,error}=await db.auth.getSession();
+  if(error||!data?.session?.user?.id){loginRedirect();return}
+  // getUser validates the token with Supabase Auth rather than trusting storage.
+  const verified=await db.auth.getUser();
+  if(verified.error||!verified.data?.user?.id){loginRedirect();return}
+  await load();
+ }catch(err){
+  if(/refresh token|invalid refresh|session expired|auth session missing|invalid jwt/i.test(String(err?.message||""))){loginRedirect();return}
+  console.error("[LMS Documents]",err);
+  document.getElementById("content").innerHTML=`<div class="panel"><div class="empty">${esc(err?.message||"Unable to load documents.")}</div></div>`;
+ }
+}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
