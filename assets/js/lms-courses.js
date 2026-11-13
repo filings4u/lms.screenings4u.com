@@ -51,6 +51,7 @@
   function applyFontSize(value){
     const size = Math.max(FONT_MIN, Math.min(FONT_MAX, Number(value) || FONT_DEFAULT));
     document.documentElement.style.setProperty("--portal-font-root", `${size}px`);
+    document.documentElement.style.setProperty("--lms-text-scale", String(size / FONT_DEFAULT));
     localStorage.setItem(FONT_KEY, String(size));
     const label = document.getElementById("fontSizeValue");
     if (label) label.textContent = size === FONT_DEFAULT ? "Default" : String(size);
