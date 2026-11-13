@@ -127,45 +127,39 @@
     }
   }
 
-  async function prefetchPage(href) {
+  // Only prefetch a route when the learner signals an intention to visit it.
+  // Do not automatically download six pages and their assets on every view:
+  // that competes with active Supabase queries and slows the portal.
+  const prefetchQueue = new Set();
+  function prefetchPage(href) {
     try {
       const url = new URL(href, location.href);
-      if (url.origin !== location.origin || !/\.html(?:$|\?)/i.test(url.pathname + url.search)) return;
-      if (prefetched.has(url.href)) return;
+      if (url.origin !== location.origin || !/\\.html$/i.test(url.pathname) || url.href === location.href) return;
+      if (prefetched.has(url.href) || prefetchQueue.size >= 2) return;
       prefetched.add(url.href);
-
-      const response = await fetch(url.href, { credentials: "same-origin", cache: "force-cache" });
-      if (!response.ok) return;
-      const text = await response.text();
-
-      const assets = [...text.matchAll(/(?:src|href)=["']([^"']+\.(?:css|js)(?:\?[^"']*)?)["']/gi)]
-        .map(m => {
-          try { return new URL(m[1], url.href); } catch (_) { return null; }
-        })
-        .filter(Boolean)
-        .filter(u => u.origin === location.origin);
-
-      assets.slice(0, 8).forEach(u => {
-        fetch(u.href, { credentials: "same-origin", cache: "force-cache" }).catch(() => {});
-      });
+      prefetchQueue.add(url.href);
+      fetch(url.href, { credentials: "same-origin", cache: "force-cache", priority: "low" })
+        .catch(() => { prefetched.delete(url.href); })
+        .finally(() => prefetchQueue.delete(url.href));
     } catch (_) {}
   }
 
   function wirePrefetch() {
-    const trigger = event => {
-      const a = event.target?.closest?.("a[href]");
-      if (a) prefetchPage(a.href);
-    };
-    document.addEventListener("pointerover", trigger, { passive: true });
-    document.addEventListener("focusin", trigger);
-    document.addEventListener("touchstart", trigger, { passive: true });
-
-    const idle = window.requestIdleCallback || (cb => setTimeout(cb, 800));
-    idle(() => {
-      [
-        "lms-dashboard.html","lms-my-courses.html","lms-courses.html",
-        "lms-progress.html","lms-certificates.html","lms-my-appointments.html"
-      ].forEach(prefetchPage);
+    if (navigator.connection?.saveData) return;
+    let hoverTimer;
+    document.addEventListener("pointerover", event => {
+      if (event.pointerType === "touch") return;
+      const link = event.target?.closest?.("a[href]");
+      if (!link) return;
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(() => prefetchPage(link.href), 100);
+    }, { passive: true });
+    document.addEventListener("pointerout", event => {
+      if (event.target?.closest?.("a[href]")) clearTimeout(hoverTimer);
+    }, { passive: true });
+    document.addEventListener("focusin", event => {
+      const link = event.target?.closest?.("a[href]");
+      if (link) prefetchPage(link.href);
     });
   }
 
