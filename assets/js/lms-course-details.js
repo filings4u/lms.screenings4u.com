@@ -1797,12 +1797,15 @@ async function init(){
  if(!cr.data) throw new Error("This course is unavailable or you do not have access.");
  course=cr.data;
 
- var er=await db.from("lms_enrollments").select("*").eq("user_id",user.id).eq("course_id",course.id).in("status",["active","completed"]).maybeSingle();
+ // Enrollment and section metadata depend on the course, not on each other.
+ var results=await Promise.all([
+   db.from("lms_enrollments").select("*").eq("user_id",user.id).eq("course_id",course.id).in("status",["active","completed"]).maybeSingle(),
+   db.from("lms_sections").select("*").eq("course_id",course.id).eq("is_published",true).order("sort_order")
+ ]);
+ var er=results[0],sr=results[1];
  if(er.error) throw er.error;
- enrollment=er.data||null;
-
- var sr=await db.from("lms_sections").select("*").eq("course_id",course.id).eq("is_published",true).order("sort_order");
  if(sr.error) throw sr.error;
+ enrollment=er.data||null;
  sections=sr.data||[];
  var sectionIds=sections.map(x=>x.id);
  var lessons=[];
