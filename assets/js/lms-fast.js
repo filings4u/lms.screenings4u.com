@@ -33,17 +33,9 @@
       if (clientCache.has(cacheKey)) return clientCache.get(cacheKey);
 
       const client = originalCreateClient(url, key, options);
-      const originalGetSession = client.auth.getSession.bind(client.auth);
+      // Never replace auth.getSession with an unverified stored token.
+      // Supabase must validate/refresh the session before Edge Functions run.
       const originalSignOut = client.auth.signOut.bind(client.auth);
-
-      client.auth.getSession = function() {
-        const stored = readStoredSession(storageKey);
-        if (stored) {
-          Promise.resolve().then(() => originalGetSession()).catch(() => {});
-          return Promise.resolve({ data: { session: stored }, error: null });
-        }
-        return originalGetSession();
-      };
 
       client.auth.signOut = async function(...args) {
         try {
@@ -85,7 +77,7 @@
     const page = document.body?.dataset?.portalPage || "";
     return new Set([
       "dashboard","my-courses","courses","progress","certificates",
-      "my-appointments","group-seats","documents","orders",
+      "my-appointments","group-seats","orders",
       "notifications","account","support","live-training"
     ]).has(page);
   }
